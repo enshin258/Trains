@@ -1,0 +1,115 @@
+package sample;
+
+import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+
+
+
+class Background {
+
+    private int width;
+    private int height;
+    private GridPane gridpane;
+    private Rectangle[][] square;
+    private Rectangle[] station;
+
+
+    Background(int wwidth, int hheight)
+    {
+        this.width=wwidth;
+        this.height=hheight;
+        square = new Rectangle[width][height];
+
+        gridpane = new GridPane();
+
+
+
+        //creating map in background
+        for(int i=0 ; i<width ; i++)
+        {
+            for (int j=0 ; j<height;j++)
+            {
+                square[i][j] = new Rectangle(100,50);
+                square[i][j].setStroke(Color.DIMGRAY);
+                square[i][j].setFill(Color.GRAY);
+                square[i][j].setId("x:" + i + " " + "y:" + j);
+
+                square[i][j].setOnMouseClicked(event -> {
+                    Rectangle source = (Rectangle)event.getSource();
+                    System.out.println(source.getId());
+                });
+
+                gridpane.add(square[i][j],i,j);
+
+            }
+        }
+        //creating possible routes
+
+
+        //horizontal parts
+        //lower part
+        for (int i = 0; i <11 ; i++) {
+            square[i][16].setFill(Color.WHITE);
+            square[i][16].setStroke(Color.BLACK);
+        }
+        //upper part
+        for (int i = 0; i < 6; i++) {
+            square[i][0].setFill(Color.WHITE);
+            square[i][0].setStroke(Color.BLACK);
+        }
+        //middle part
+        for (int i = 0; i < 11; i++) {
+            square[i][8].setFill(Color.WHITE);
+            square[i][8].setStroke(Color.BLACK);
+        }
+        //vertical parts
+        //left
+        for (int i = 0; i < 8; i++) {
+            square[0][i].setFill(Color.WHITE);
+            square[0][i].setStroke(Color.BLACK);
+        }
+        //middle
+        for (int i = 0; i < 16; i++) {
+            square[5][i].setFill(Color.WHITE);
+            square[5][i].setStroke(Color.BLACK);
+        }
+        //right
+        for (int i = 8; i < 16; i++) {
+            square[10][i].setFill(Color.WHITE);
+            square[10][i].setStroke(Color.BLACK);
+        }
+
+
+        //coloring stations
+
+        station = new Rectangle[3];
+
+        station[0] = square[0][0];
+        station[1] = square[0][16];
+        station[2] = square[10][16];
+
+        for(int i=0;i<3;i++)
+        {
+            station[i].setFill(Color.RED);
+            station[i].setStroke(Color.DARKRED);
+
+        }
+
+
+
+    }
+    GridPane getGridpane() {
+        return gridpane;
+    }
+
+    public Rectangle[][] getSquare() {
+        return square;
+    }
+
+    public Rectangle[] getStation() {
+        return station;
+    }
+
+
+}
