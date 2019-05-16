@@ -4,6 +4,7 @@ import javafx.animation.*;
 import javafx.scene.control.Button;
 import javafx.scene.effect.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -21,6 +22,13 @@ public class Train extends Thread {
     static Rectangle square[][];
     static Rectangle[] station;
     int trace_number;
+    static Button button = new Button("Start/Pause");
+    static boolean flague = false;
+    static SequentialTransition seq_1;
+    static SequentialTransition seq_2;
+    static SequentialTransition seq_3;
+
+
 
 
 
@@ -34,6 +42,7 @@ public class Train extends Thread {
     }
     public static void setGridPane(GridPane grid)
     {
+
         gridPane = grid;
     }
 
@@ -61,7 +70,6 @@ public class Train extends Thread {
         }
 
         //creating possible routes
-
 
         //horizontal parts
         //lower part
@@ -113,14 +121,42 @@ public class Train extends Thread {
 
 
 
+        //button for testing
 
+        button.setOnAction(event -> {
+            try {
+                flague=!flague;
+                if(flague)
+                {
+                    seq_1.play();
+                    seq_2.play();
+                    seq_3.play();
+                }
+                else
+                {
+                    seq_1.pause();
+                    seq_2.pause();
+                    seq_3.pause();
+                }
 
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+        });
+
+        gridPane.add(button,0,0);
     }
+
+
+
+
 
 
     @Override
     public void run() {
-
 
         locomotive = new Rectangle(100,40);
 
@@ -140,12 +176,6 @@ public class Train extends Thread {
         gridPane.add(locomotive,pos_x,pos_y);
 
 
-
-
-
-
-
-
         switch (trace_number)
         {
             case 1://from left top corner to bottom right
@@ -160,11 +190,16 @@ public class Train extends Thread {
 
                 transition_3.setByX(400);
 
-                SequentialTransition seq_1 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3);
+                seq_1 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3);
+
+
+
+
+
                 seq_1.setCycleCount(100);
 
                 seq_1.setAutoReverse(true);
-                seq_1.play();
+                //seq_1.play();
 
 
                 break;
@@ -181,11 +216,11 @@ public class Train extends Thread {
 
                 transition_3.setByX(-400);
 
-                SequentialTransition seq_1 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3);
-                seq_1.setCycleCount(100);
+                seq_2 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3);
 
-                seq_1.setAutoReverse(true);
-                seq_1.play();
+                seq_2.setCycleCount(100);
+
+                seq_2.setAutoReverse(true);
                 break;
             }
             case 3:
@@ -203,22 +238,14 @@ public class Train extends Thread {
 
                 transition_4.setByX(-400);
 
-                SequentialTransition seq_1 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3,transition_4);
-                seq_1.setCycleCount(100);
+                seq_3 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3,transition_4);
+                seq_3.setCycleCount(100);
 
-                seq_1.setAutoReverse(true);
+                seq_3.setAutoReverse(true);
 
-                seq_1.play();
                 break;
             }
         }
-
-
-
-
-
-
-
     }
 }
 
