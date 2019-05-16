@@ -1,11 +1,18 @@
 package sample;
 
+import javafx.animation.*;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.MotionBlur;
 import javafx.scene.layout.GridPane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Translate;
+import javafx.util.Duration;
 
+import java.awt.*;
 
 
 public class Train extends Thread {
@@ -18,14 +25,16 @@ public class Train extends Thread {
     Color color;
     static Rectangle square[][];
     static Rectangle[] station;
+    int trace_number;
 
 
-    Train(String id, int x, int y, Color color)
+    Train(String id, int x, int y, Color color,int trace_number)
     {
         this.id=id;
         this.pos_x=x;
         this.pos_y=y;
         this.color=color;
+        this.trace_number= trace_number;
     }
     public static void setGridPane(GridPane grid)
     {
@@ -109,27 +118,60 @@ public class Train extends Thread {
 
     }
 
-    public Node getNodeByRowColumnIndex (final int row, final int column) {
-        Node result = null;
-        ObservableList<Node> childrens = gridPane.getChildren();
 
-        for (Node node : childrens) {
-            if(gridPane.getRowIndex(node) == row && gridPane.getColumnIndex(node) == column) {
-                result = node;
+    @Override
+    public void run() {
+        locomotive = new Rectangle(100,40);
+
+        locomotive.setFill(this.color);
+        locomotive.setId(this.id);
+        locomotive.toFront();
+        locomotive.setEffect(new MotionBlur());
+        locomotive.setOnMouseClicked(event -> {
+            Rectangle source = (Rectangle) event.getSource();
+            System.out.println("Pociag:" + id + color.toString());
+            System.out.println(source.getLayoutX());
+            System.out.println(source.getTranslateX());
+            System.out.println(source.getY());
+        });
+
+        gridPane.add(locomotive,pos_x,pos_y);
+
+
+
+        switch (trace_number)
+        {
+            case 1:
+            {
+                TranslateTransition transition_1 = new TranslateTransition(Duration.millis(2000),locomotive);
+                TranslateTransition transition_2 = new TranslateTransition(Duration.millis(2000),locomotive);
+                TranslateTransition transition_3 = new TranslateTransition(Duration.millis(2000),locomotive);
+
+                transition_1.setByX(400);
+                //transition_1.setCycleCount(5);
+                //transition_1.setAutoReverse(true);
+                //transition_1.play();
+                transition_2.setByY(640);
+                //transition_2.setCycleCount(5);
+                //transition_2.setAutoReverse(true);
+
+                transition_3.setByX(400);
+                //transition_3.setCycleCount(5);
+                //transition_3.setAutoReverse(true);
+
+                SequentialTransition seq_1 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3);
+                seq_1.setCycleCount(5);
+                seq_1.setAutoReverse(true);
+                seq_1.play();
+
+
                 break;
             }
         }
 
-        return result;
-    }
 
-    @Override
-    public void run() {
 
-        locomotive=new Rectangle(100,40);
-        locomotive.setFill(this.color);
-        locomotive.setId(this.id);
-        gridPane.add(locomotive,this.pos_x,this.pos_y);
+
 
 
 

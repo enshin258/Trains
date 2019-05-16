@@ -16,12 +16,14 @@ public class Controller implements Initializable {
     @FXML
     public GridPane panel;
 
+    int trace_number;
+
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
         Train.setGridPane(panel);
         Train.draw_map();
-        Train t1 = new Train("Pociag niebieski",1,0, Color.BLUE);
+        Train t1 = new Train("Pociag niebieski",1,0, Color.BLUE,1);
         t1.run();
 
     }
