@@ -4,7 +4,6 @@ import javafx.animation.*;
 import javafx.scene.control.Button;
 import javafx.scene.effect.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -13,23 +12,23 @@ import javafx.util.Duration;
 
 public class Train extends Thread {
 
+    private String id;
+    private Rectangle locomotive;
+    private int pos_x;
+    private int pos_y;
+    private Color color;
+    private int trace_number;
+
+
     private static GridPane gridPane;
-    String id;
-    Rectangle locomotive;
-    int pos_x;
-    int pos_y;
-    Color color;
-    static Rectangle square[][];
-    static Rectangle[] station;
-    int trace_number;
-    static Button button = new Button("Start/Pause");
-    static boolean flague = false;
-    static SequentialTransition seq_1;
-    static SequentialTransition seq_2;
-    static SequentialTransition seq_3;
+    private static Rectangle[][] square;
+    private static Rectangle[] station;
 
-
-
+    private static Button button = new Button("Start/Pause");
+    private static boolean flag = false;
+    private static SequentialTransition seq_1;
+    private static SequentialTransition seq_2;
+    private static SequentialTransition seq_3;
 
 
     Train(String id, int x, int y, Color color,int trace_number)
@@ -40,13 +39,13 @@ public class Train extends Thread {
         this.color=color;
         this.trace_number= trace_number;
     }
-    public static void setGridPane(GridPane grid)
+    static void setGridPane(GridPane grid)
     {
 
         gridPane = grid;
     }
 
-    public static void draw_map()
+    static void draw_map()
     {
         square = new Rectangle[11][17];
 
@@ -125,8 +124,8 @@ public class Train extends Thread {
 
         button.setOnAction(event -> {
             try {
-                flague=!flague;
-                if(flague)
+                flag=!flag;
+                if(flag)
                 {
                     seq_1.play();
                     seq_2.play();
