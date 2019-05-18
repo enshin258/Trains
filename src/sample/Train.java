@@ -38,6 +38,23 @@ public class Train extends Thread {
         this.pos_y=y;
         this.color=color;
         this.trace_number= trace_number;
+
+        locomotive = square[pos_x][pos_y];
+
+        locomotive.setFill(this.color);
+        locomotive.setId(this.id);
+        locomotive.toFront();
+        locomotive.setEffect(new DropShadow());
+
+        locomotive.setOnMouseClicked(event -> {
+            Rectangle source = (Rectangle) event.getSource();
+            System.out.println("Pociag:" + id + color.toString());
+            System.out.println(source.getLayoutX());
+            System.out.println(source.getTranslateX());
+            System.out.println(source.getY());
+        });
+
+       // gridPane.add(locomotive,pos_x,pos_y);
     }
     static void setGridPane(GridPane grid)
     {
@@ -127,15 +144,15 @@ public class Train extends Thread {
                 flag=!flag;
                 if(flag)
                 {
-                    seq_1.play();
-                    seq_2.play();
-                    seq_3.play();
+//                    seq_1.play();
+//                    seq_2.play();
+//                    seq_3.play();
                 }
                 else
                 {
-                    seq_1.pause();
-                    seq_2.pause();
-                    seq_3.pause();
+//                    seq_1.pause();
+//                    seq_2.pause();
+//                    seq_3.pause();
                 }
 
             }
@@ -150,58 +167,85 @@ public class Train extends Thread {
     }
 
 
-
-
-
-
     @Override
     public void run() {
-
-        locomotive = new Rectangle(100,40);
-
-        locomotive.setFill(this.color);
-        locomotive.setId(this.id);
-        locomotive.toFront();
-        locomotive.setEffect(new DropShadow());
-
-        locomotive.setOnMouseClicked(event -> {
-            Rectangle source = (Rectangle) event.getSource();
-            System.out.println("Pociag:" + id + color.toString());
-            System.out.println(source.getLayoutX());
-            System.out.println(source.getTranslateX());
-            System.out.println(source.getY());
-        });
-
-        gridPane.add(locomotive,pos_x,pos_y);
-
 
         switch (trace_number)
         {
             case 1://from left top corner to bottom right
             {
-                TranslateTransition transition_1 = new TranslateTransition(Duration.millis(2000),locomotive);
-                TranslateTransition transition_2 = new TranslateTransition(Duration.millis(2000),locomotive);
-                TranslateTransition transition_3 = new TranslateTransition(Duration.millis(2000),locomotive);
-
-                transition_1.setByX(400);
-
-                transition_2.setByY(640);
-
-                transition_3.setByX(400);
-
-                seq_1 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3);
+                int klatka=1;
+                while(true)
+                {
+                    if(flag)
+                    {
+                        int x_old = pos_x+klatka-1;
+                        int y_old = pos_y;
+                        System.out.println("dzialam: " + klatka);
 
 
+                        locomotive=square[pos_x+klatka][pos_y];
+
+                        locomotive.setFill(this.color);
+                        locomotive.setId(this.id);
+                        //locomotive.toFront();
+                        locomotive.setEffect(new DropShadow());
+
+                        square[x_old][y_old].setFill(Color.SLATEGRAY);
+                        square[x_old][y_old].setId("x:" + x_old + " " + "y:" + y_old);
+
+                        square[x_old][y_old].setOnMouseClicked(event -> {
+                            Rectangle source = (Rectangle)event.getSource();
+                            System.out.println(source.getId());
+                        });
+
+                        klatka++;
+
+                        try
+                        {
+                            Thread.sleep(1000);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    else {
+                        try
+                        {
+                            Thread.sleep(1000);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+//                TranslateTransition transition_1 = new TranslateTransition(Duration.millis(2000),locomotive);
+//                TranslateTransition transition_2 = new TranslateTransition(Duration.millis(2000),locomotive);
+//                TranslateTransition transition_3 = new TranslateTransition(Duration.millis(2000),locomotive);
+//
+//                transition_1.setByX(400);
+//
+//                transition_2.setByY(640);
+//
+//                transition_3.setByX(400);
+//
+//                seq_1 = new SequentialTransition(locomotive,transition_1,transition_2,transition_3);
+//
+//
+//
+//
+//
+//                seq_1.setCycleCount(100);
+//
+//                seq_1.setAutoReverse(true);
+//                //seq_1.play();
 
 
-
-                seq_1.setCycleCount(100);
-
-                seq_1.setAutoReverse(true);
-                //seq_1.play();
-
-
-                break;
+                //break;
             }
             case 2://from left bottom to left top
             {

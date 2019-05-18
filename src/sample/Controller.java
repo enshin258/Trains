@@ -35,10 +35,13 @@ public class Controller implements Initializable {
         Train t2 = new Train("Pociag pomaranczowy",1,16, Color.ORANGE,2);
         Train t3 = new Train("Pociag zolty",10,15, Color.YELLOW,3);
 
+        t1.setDaemon(true);
+        t2.setDaemon(true);
+        t3.setDaemon(true);
 
-        t1.run();
-        t2.run();
-        t3.run();
+        t1.start();
+        t2.start();
+        t3.start();
 
 
 
