@@ -200,6 +200,10 @@ public class Train extends Thread {
                         });
 
                         klatka++;
+                        if(klatka>4)
+                        {
+                            break;
+                        }
 
                         try
                         {
