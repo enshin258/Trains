@@ -1,11 +1,19 @@
 package sample;
 
 import javafx.scene.control.Button;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.Shadow;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import org.w3c.dom.css.Rect;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Random;
+import java.util.Vector;
+import java.util.concurrent.Semaphore;
 
 
 public class Train extends Thread {
@@ -19,17 +27,16 @@ public class Train extends Thread {
     private Color color; //color
     private int milis_time; //speed
     private int trace_number; //programed trace of train
-    private int frame=1; //used for moving
-    private boolean[] moved = new boolean[9]; //check if part of animation was played
 
 
     private static GridPane gridPane; //set grid in background
     private static Rectangle[][] square; //all rectangles
     private static Rectangle[] station; //stations
+    private static Rectangle crossing; //crossing in middle
+    private static Semaphore semaphore = new Semaphore(1);//semaphore
     private static Button button = new Button("Start/Pause"); //button for start and pause animation
 
     private static boolean animation_flag = false; //on button click its changes so animation can be started/stopped
-    private enum direction{left,right,up,down} //set direction of moving
 
 
 
@@ -166,136 +173,54 @@ public class Train extends Thread {
             station[i].setStroke(Color.DARKRED);
         }
 
+        //declare crossing
+        crossing = square[5][8];
+        crossing.setStroke(Color.WHITE);
+        crossing.toFront();
+
         //button for start and stop animation
         button.setOnAction(event -> {
             animation_flag=!animation_flag;
         });
         gridPane.add(button,0,0);
     }
-    void paint(int new_x,int new_y,int old_x,int old_y,direction dir)
+
+    void move (Vector<Rectangle> path)
     {
+        for (Rectangle next_title:path) {
 
-        locomotive=square[new_x][new_y];
-        locomotive.setFill(this.color);
-        locomotive.setId(this.id);
-        square[old_x][old_y].setFill(Color.GRAY);
-        square[old_x][old_y].setId("x:" + old_x + " " + "y:" + old_y);
-        square[old_x][old_y].setOnMouseClicked(event -> {
-            Rectangle source = (Rectangle)event.getSource();
-            System.out.println(source.getId());
-        });
-        frame++;
-    }
-    void move(direction dir,int number_of_titles,long time_milis,int number_of_animation)
-    {
-        switch (dir)
-        {
-            case up://ok
-            {
-                int x_new = this.pos_x;
-                int x_old = this.pos_x;
-                int y_new = this.pos_y-frame;
-                int y_old = this.pos_y-frame+1;
-                System.out.println("up move number:" + frame);
-                paint(x_new,y_new,x_old,y_old,dir);
+            Rectangle prev_title = cargo_back;
 
-                if(frame>number_of_titles)
-                {
-                    frame=1;
-                    this.pos_y=y_new;
-                    moved[number_of_animation]=true;
-                    break;
-                }
-                try
-                {
-                    Thread.sleep(time_milis);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;
+            cargo_back=cargo_front;
+            cargo_front=locomotive;
+            locomotive=next_title;
+
+
+            prev_title.setFill(Color.GRAY);
+            next_title.setFill(this.color);
+
+
+            try {
+                Thread.sleep(milis_time);
             }
-            case down://ok
+            catch (Exception e)
             {
-                int x_new = this.pos_x;
-                int x_old = this.pos_x;
-                int y_new = this.pos_y+frame;
-                int y_old = this.pos_y+frame-1;
-                System.out.println("down move number:" + frame);
-                paint(x_new,y_new,x_old,y_old,dir);
-
-                if(frame>number_of_titles)
-                {
-                    this.frame=1;
-                    this.pos_y=y_new;
-                    moved[number_of_animation]=true;
-                    break;
-                }
-                try
-                {
-                    Thread.sleep(time_milis);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;
-            }
-            case left://ok
-            {
-                int y_new = this.pos_y;
-                int y_old = this.pos_y;
-                int x_new = this.pos_x-this.frame;
-                int x_old = this.pos_x-this.frame+1;
-                System.out.println("left move number:" + this.frame);
-                paint(x_new,y_new,x_old,y_old,dir);
-
-                if(frame>number_of_titles)
-                {
-                    this.frame=1;
-                    this.pos_x = x_new;
-                    moved[number_of_animation]=true;
-                    break;
-                }
-                try
-                {
-                    Thread.sleep(time_milis);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;
-            }
-            case right://ok
-            {
-                int y_new = this.pos_y;
-                int y_old = this.pos_y;
-                int x_new = this.pos_x+this.frame;
-                int x_old = this.pos_x+this.frame-1;
-                System.out.println("right move number:" + this.frame);
-                paint(x_new,y_new,x_old,y_old,dir);
-
-                if(this.frame>number_of_titles)
-                {
-                    this.frame=1;
-                    this.pos_x = x_new;
-                    moved[number_of_animation]=true;
-                    break;
-                }
-                try
-                {
-                    Thread.sleep(time_milis);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                break;
+                e.printStackTrace();
             }
         }
+        try
+        {
+            System.out.println(this.id + " is waiting on station...");
+            Thread.sleep(new Random().nextInt(5000));
+        }
+        catch ( Exception e)
+        {
+            e.printStackTrace();
+        }
+
     }
+
+
 
 
     @Override
@@ -305,58 +230,37 @@ public class Train extends Thread {
         {
             case 1://from left top corner to bottom right
             {
-                while(true)
+                //creating path for train
+                Vector<Rectangle> path = new Vector<>();
+
+                path.add(square[1][0]);
+                path.add(square[2][0]);
+                path.add(square[3][0]);
+                path.add(square[4][0]);
+                path.add(square[5][0]);
+                for (int i = 0; i < 16; i++) {
+                    path.add(square[5][i+1]);
+                }
+                path.add(square[6][16]);
+                path.add(square[7][16]);
+                path.add(square[8][16]);
+                path.add(square[9][16]);
+
+                while (true)
                 {
                     if(animation_flag)
                     {
-                        if(!moved[1])
-                        {
-                            this.move(direction.right,2,milis_time,1);
-                        }
-                        else if(!moved[2])
-                        {
-                            this.move(direction.down,16,milis_time,2);
-                        }
-                        else if(!moved[3])
-                        {
-                            this.move(direction.right,4,milis_time,3);
-                        }
-                        else if (!moved[4])
-                        {
-                            this.move(direction.left,4,milis_time,4);
-                        }
-                        else if(!moved[5])
-                        {
-                            this.move(direction.up,16,milis_time,5);
-                        }
-                        else if(!moved[6])
-                        {
-                            this.move(direction.left,2,milis_time,6);
-                        }
-                        else
-                        {
-                            try
-                            {
-                                Thread.sleep(1000);
-                                System.out.println(this.id + "Waiting on station...");
-                                Random random = new Random();
-                                Thread.sleep(random.nextInt(10000));
-                                System.out.println(this.id + "Started again!");
-                                for (int i = 0; i < moved.length; i++) {
-                                    moved[i]=false;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
+                        move(path);
+                        Collections.reverse(path);
+                        Rectangle temp = locomotive;
+                        locomotive=cargo_back;
+                        cargo_back=temp;
+                        move(path);
+                        Collections.reverse(path);
                     }
                     else {
-                        try
-                        {
+                        try {
                             Thread.sleep(1000);
-                            System.out.println("Animation stopped!");
                         }
                         catch (Exception e)
                         {
@@ -368,154 +272,110 @@ public class Train extends Thread {
             }
             case 2://from left bottom to left top
             {
+                Vector<Rectangle> path = new Vector<>();
+                path.add(square[1][16]);
+                path.add(square[2][16]);
+                path.add(square[3][16]);
+                path.add(square[4][16]);
+                path.add(square[5][16]);
+                for (int i = 1; i < 9; i++) {
+                    path.add(square[5][16-i]);
+                }
+                path.add(square[4][8]);
+                path.add(square[3][8]);
+                path.add(square[2][8]);
+                path.add(square[1][8]);
+                path.add(square[0][8]);
+
+                path.add(square[0][7]);
+                path.add(square[0][6]);
+                path.add(square[0][5]);
+                path.add(square[0][4]);
+                path.add(square[0][3]);
+                path.add(square[0][2]);
+                path.add(square[0][1]);
+
+
+                while (true)
                 {
-                    while(true)
+                    if(animation_flag)
                     {
-                        if(animation_flag)
-                        {
-
-                            if(!moved[1])
-                            {
-                                this.move(direction.right,2,milis_time,1);
-                            }
-                            else if(!moved[2])
-                            {
-                                this.move(direction.up,8,milis_time,2);
-                            }
-                            else if(!moved[3])
-                            {
-                                this.move(direction.left,5,milis_time,3);
-                            }
-                            else if (!moved[4])
-                            {
-                                this.move(direction.up,5,milis_time,4);
-                            }
-                            else if(!moved[5])
-                            {
-                                this.move(direction.down,5,milis_time,5);
-                            }
-                            else if(!moved[6])
-                            {
-                                this.move(direction.right,5,milis_time,6);
-                            }
-                            else if(!moved[7])
-                            {
-                                this.move(direction.down,8,milis_time,7);
-                            }
-                            else  if(!moved[8])
-                            {
-                                this.move(direction.left,2,milis_time,8);
-
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    Thread.sleep(1000);
-                                    System.out.println(this.id + "Waiting on station...");
-                                    Random random = new Random();
-                                    Thread.sleep(random.nextInt(10000));
-                                    System.out.println(this.id + "Started again!");
-                                    for (int i = 0; i < moved.length; i++) {
-                                        moved[i]=false;
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        else {
-                            try
-                            {
-                                Thread.sleep(1000);
-                                System.out.println("Animation stopped!");
-                            }
-                            catch (Exception e)
-                            {
-                                e.printStackTrace();
-                            }
-                        }
-
+                        move(path);
+                        Collections.reverse(path);
+                        Rectangle temp = locomotive;
+                        locomotive=cargo_back;
+                        cargo_back=temp;
+                        move(path);
+                        Collections.reverse(path);
                     }
+                    else {
+                        try {
+                            Thread.sleep(1000);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+
                 }
             }
             case 3:
             {
+                Vector<Rectangle> path = new Vector<>();
+                path.add(square[10][15]);
+                path.add(square[10][14]);
+                path.add(square[10][13]);
+                path.add(square[10][12]);
+                path.add(square[10][11]);
+                path.add(square[10][10]);
+                path.add(square[10][9]);
+                path.add(square[10][8]);
+
+                path.add(square[9][8]);
+                path.add(square[8][8]);
+                path.add(square[7][8]);
+                path.add(square[6][8]);
+                path.add(square[5][8]);
+
+                path.add(square[5][7]);
+                path.add(square[5][6]);
+                path.add(square[5][5]);
+                path.add(square[5][4]);
+                path.add(square[5][3]);
+                path.add(square[5][2]);
+                path.add(square[5][1]);
+                path.add(square[5][0]);
+
+                path.add(square[4][0]);
+                path.add(square[3][0]);
+                path.add(square[2][0]);
+                path.add(square[1][0]);
+
+
+
+                while (true)
                 {
+                    if(animation_flag)
                     {
-                        while(true)
+                        move(path);
+                        Collections.reverse(path);
+                        Rectangle temp = locomotive;
+                        locomotive=cargo_back;
+                        cargo_back=temp;
+                        move(path);
+                        Collections.reverse(path);
+                    }
+                    else {
+                        try {
+                            Thread.sleep(1000);
+                        }
+                        catch (Exception e)
                         {
-                            if(animation_flag)
-                            {
-
-                                if(!moved[1])
-                                {
-                                    this.move(direction.up,5,milis_time,1);
-                                }
-                                else if(!moved[2])
-                                {
-                                    this.move(direction.left,5,milis_time,2);
-                                }
-                                else if(!moved[3])
-                                {
-                                    this.move(direction.up,8,milis_time,3);
-                                }
-                                else if (!moved[4])
-                                {
-                                    this.move(direction.left,1,milis_time,4);
-                                }
-                                else if(!moved[5])
-                                {
-                                    this.move(direction.right,1,milis_time,5);
-                                }
-                                else if(!moved[6])
-                                {
-                                    this.move(direction.down,8,milis_time,6);
-                                }
-                                else if(!moved[7])
-                                {
-                                    this.move(direction.right,5,milis_time,7);
-                                }
-                                else  if(!moved[8])
-                                {
-                                    this.move(direction.down,5,milis_time,8);
-
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        Thread.sleep(1000);
-                                        System.out.println(this.id + "Waiting on station...");
-                                        Random random = new Random();
-                                        Thread.sleep(random.nextInt(10000));
-                                        System.out.println(this.id + "Started again!");
-                                        for (int i = 0; i < moved.length; i++) {
-                                            moved[i]=false;
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                            else {
-                                try
-                                {
-                                    Thread.sleep(1000);
-                                    System.out.println("Animation stopped!");
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-
+                            e.printStackTrace();
                         }
                     }
+
                 }
             }
         }
