@@ -19,23 +19,21 @@ import java.util.concurrent.Semaphore;
 public class Train extends Thread {
 
     private String id; //train id
-    private Rectangle locomotive; //front part (locomotice)
-    private Rectangle cargo_front; //middle part
-    private Rectangle cargo_back; //back part
-    private int pos_x; //actual x position
-    private int pos_y; //actual y position
+    volatile private Rectangle locomotive; //front part (locomotice)
+    volatile private Rectangle cargo_front; //middle part
+    volatile private Rectangle cargo_back; //back part
+    volatile private int pos_x; //actual x position
+    volatile private int pos_y; //actual y position
     private Color color; //color
     private int milis_time; //speed
     private int trace_number; //programed trace of train
-    private boolean was_in_tunnel=false;
 
 
     private static GridPane gridPane; //set grid in background
-    private static Rectangle[][] square; //all rectangles
+    volatile private static Rectangle[][] square; //all rectangles
     private static Rectangle[] station; //stations
-    private static Rectangle crossing; //crossing in middle
-    private static Vector<Rectangle> tunnel = new Vector<Rectangle>();
-    volatile private static Semaphore semaphore = new Semaphore(1);////////semaphore
+    private static Vector<Rectangle> tunnel = new Vector<>();
+    volatile private static Semaphore semaphore = new Semaphore(1);//semaphore
 
 
     //0->right track of station 1
@@ -186,6 +184,7 @@ public class Train extends Thread {
         //setting tunnel
         for (int i = 0; i < 17; i++) {
             square[5][i].setStroke(Color.WHITE);
+            square[5][i].toFront();
             tunnel.add(square[5][i]);
         }
 
@@ -197,50 +196,82 @@ public class Train extends Thread {
     }
 
 
+    void draw(Rectangle next_title)
+    {
+        Rectangle prev_title = cargo_back;
+
+        cargo_back=cargo_front;
+        cargo_front=locomotive;
+        locomotive=next_title;
+
+        prev_title.setFill(Color.GRAY);
+        next_title.setFill(this.color);}
+
+
     synchronized void move (Vector<Rectangle> path)
     {
-
-        for (Rectangle next_title:path) {
-
-
-            Rectangle prev_title = cargo_back;
-            cargo_back=cargo_front;
-            cargo_front=locomotive;
-            locomotive=next_title;
-
-            //if any part of train is in tunnel
-            if(tunnel.contains(cargo_back) || tunnel.contains(cargo_front) || tunnel.contains(locomotive))
+        boolean get_perrmision=false;
+        boolean was_in_tunnel=false;
+        for (Rectangle next_title:path)
+        {
+            //entering tunnel
+            if(tunnel.contains(next_title))
             {
-                this.was_in_tunnel=true;
-                System.out.println(this.id + " is in tunnel ");
-                //semaphore.acquireUninterruptibly();
-
-                for (Rectangle x:tunnel
-                     ) {
-                    x.setStroke(Color.ORANGERED);
+                System.out.println(this.id + " want get permission");
+                if(semaphore.tryAcquire() || get_perrmision)
+                {
+                    get_perrmision=true;
+                    was_in_tunnel=true;
+                    System.out.println(this.id + " get permission");
+                    draw(next_title);
+                    for (Rectangle x:tunnel
+                         ) {
+                        x.setStroke(Color.ORANGERED);
+                    }
 
                 }
+                else
+                {
+                    while (semaphore.availablePermits()==0)
+                    {
+                        try {
+
+                            System.out.println(this.id + " wait for permission");
+                            Thread.sleep(10);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
-            //in is not in tunnel but was second ago
-            else if(was_in_tunnel)
+            //leaving tunnel
+            else if(!tunnel.contains(locomotive) && !tunnel.contains(cargo_front)&& !tunnel.contains(cargo_back) && was_in_tunnel)
             {
-                this.was_in_tunnel=false;
-                System.out.println(this.id + " left tunnel");
+                System.out.println(this.id + " left perrmision and tunnel");
+                draw(next_title);
                 for (Rectangle x:tunnel
                 ) {
-                    x.setStroke(Color.LIGHTGREEN);
+                    x.setStroke(Color.GREENYELLOW);
                 }
-                //semaphore.release();
+                was_in_tunnel=false;
+                get_perrmision=false;
+                semaphore.release();
+                System.out.println(this.id + " notify all");
+                Thread.currentThread().notifyAll();
+
             }
+            //other route
+            else
+            {
+                draw(next_title);
+                System.out.println(this.id + " just drive");
+                get_perrmision=false;
 
 
-
-            prev_title.setFill(Color.GRAY);
-            next_title.setFill(this.color);
-
-
-
-
+            }
+            //time of animation
             try
             {
                 Thread.sleep(milis_time);
@@ -251,7 +282,6 @@ public class Train extends Thread {
             }
         }
     }
-
 
 
     void changeDirection()
