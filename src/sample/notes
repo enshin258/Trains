@@ -1,0 +1,5 @@
+    //0->right track of station 1 false
+    //1->bottom track of station 1 true
+    //2->right track of station 2 false
+    //3->top track of station 3 false
+    //4->left track of station 3 true

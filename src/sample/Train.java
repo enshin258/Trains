@@ -27,13 +27,16 @@ public class Train extends Thread {
     private Color color; //color
     private int milis_time; //speed
     private int trace_number; //programed trace of train
+    private boolean was_in_tunnel=false;
 
 
     private static GridPane gridPane; //set grid in background
     private static Rectangle[][] square; //all rectangles
     private static Rectangle[] station; //stations
     private static Rectangle crossing; //crossing in middle
-    private static Semaphore semaphore = new Semaphore(1);//semaphore
+    private static Vector<Rectangle> tunnel = new Vector<Rectangle>();
+    volatile private static Semaphore semaphore = new Semaphore(1);////////semaphore
+
 
     //0->right track of station 1
     //1->bottom track of station 1
@@ -55,7 +58,6 @@ public class Train extends Thread {
         this.color=color;
         this.trace_number= trace_number;
         this.milis_time=milis_time;
-
 
         locomotive = square[pos_x][pos_y];
         switch (trace_number)
@@ -181,10 +183,11 @@ public class Train extends Thread {
             station[i].setStroke(Color.DARKRED);
         }
 
-        //declare crossing
-        crossing = square[5][8];
-        crossing.setStroke(Color.WHITE);
-        crossing.toFront();
+        //setting tunnel
+        for (int i = 0; i < 17; i++) {
+            square[5][i].setStroke(Color.WHITE);
+            tunnel.add(square[5][i]);
+        }
 
         //button for start and stop animation
         button.setOnAction(event -> {
@@ -194,21 +197,52 @@ public class Train extends Thread {
     }
 
 
-    void move (Vector<Rectangle> path)
+    synchronized void move (Vector<Rectangle> path)
     {
-        for (Rectangle next_title:path) {
-            Rectangle prev_title = cargo_back;
 
+        for (Rectangle next_title:path) {
+
+
+            Rectangle prev_title = cargo_back;
             cargo_back=cargo_front;
             cargo_front=locomotive;
             locomotive=next_title;
+
+            //if any part of train is in tunnel
+            if(tunnel.contains(cargo_back) || tunnel.contains(cargo_front) || tunnel.contains(locomotive))
+            {
+                this.was_in_tunnel=true;
+                System.out.println(this.id + " is in tunnel ");
+                //semaphore.acquireUninterruptibly();
+
+                for (Rectangle x:tunnel
+                     ) {
+                    x.setStroke(Color.ORANGERED);
+
+                }
+            }
+            //in is not in tunnel but was second ago
+            else if(was_in_tunnel)
+            {
+                this.was_in_tunnel=false;
+                System.out.println(this.id + " left tunnel");
+                for (Rectangle x:tunnel
+                ) {
+                    x.setStroke(Color.LIGHTGREEN);
+                }
+                //semaphore.release();
+            }
+
 
 
             prev_title.setFill(Color.GRAY);
             next_title.setFill(this.color);
 
 
-            try {
+
+
+            try
+            {
                 Thread.sleep(milis_time);
             }
             catch (Exception e)
@@ -217,6 +251,8 @@ public class Train extends Thread {
             }
         }
     }
+
+
 
     void changeDirection()
     {
@@ -254,14 +290,14 @@ public class Train extends Thread {
                     if(animation_flag)
                     {
 
-                        semaphore.acquireUninterruptibly();
+                        //////semaphore.acquireUninterruptibly();
                         if(free_track[4])
                         {
                             move(path);
                             free_track[4]=false;
                             free_track[0]=true;
                         }
-                        semaphore.release();
+                        ////semaphore.release();
                         try
                         {
                             System.out.println(this.id + " is waiting on station...");
@@ -275,7 +311,7 @@ public class Train extends Thread {
                         changeDirection();
                         Collections.reverse(path);
 
-                        semaphore.acquireUninterruptibly();
+                        ////semaphore.acquireUninterruptibly();
                         if(free_track[0])
                         {
                             move(path);
@@ -283,7 +319,7 @@ public class Train extends Thread {
                             free_track[4]=true;
 
                         }
-                        semaphore.release();
+                        ////semaphore.release();
 
                         Collections.reverse(path);
                         try
@@ -339,14 +375,14 @@ public class Train extends Thread {
                 {
                     if(animation_flag)
                     {
-                        semaphore.acquireUninterruptibly();
+                        ////semaphore.acquireUninterruptibly();
                         if(free_track[1])
                         {
                             move(path);
                             free_track[1]=false;
                             free_track[2]=true;
                         }
-                        semaphore.release();
+                        ////semaphore.release();
                         try
                         {
                             System.out.println(this.id + " is waiting on station...");
@@ -360,7 +396,7 @@ public class Train extends Thread {
                         changeDirection();
                         Collections.reverse(path);
 
-                        semaphore.acquireUninterruptibly();
+                        ////semaphore.acquireUninterruptibly();
                         if(free_track[2])
                         {
                             move(path);
@@ -368,7 +404,7 @@ public class Train extends Thread {
                             free_track[1]=true;
 
                         }
-                        semaphore.release();
+                        ////semaphore.release();
 
                         Collections.reverse(path);
                         try
@@ -431,14 +467,14 @@ public class Train extends Thread {
                 {
                     if(animation_flag)
                     {
-                        semaphore.acquireUninterruptibly();
+                        ////semaphore.acquireUninterruptibly();
                         if(free_track[0])
                         {
                             move(path);
                             free_track[0]=false;
                             free_track[3]=true;
                         }
-                        semaphore.release();
+                        ////semaphore.release();
                         try
                         {
                             System.out.println(this.id + " is waiting on station...");
@@ -452,7 +488,7 @@ public class Train extends Thread {
                         changeDirection();
                         Collections.reverse(path);
 
-                        semaphore.acquireUninterruptibly();
+                        ////semaphore.acquireUninterruptibly();
                         if(free_track[3])
                         {
                             move(path);
@@ -460,7 +496,7 @@ public class Train extends Thread {
                             free_track[0]=true;
 
                         }
-                        semaphore.release();
+                        ////semaphore.release();
 
                         Collections.reverse(path);
                         try
