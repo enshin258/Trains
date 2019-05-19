@@ -212,6 +212,8 @@ public class Train extends Thread {
     {
         boolean get_perrmision=false;
         boolean was_in_tunnel=false;
+        boolean was_waited=false;
+        Rectangle temp = null;
         for (Rectangle next_title:path)
         {
             //entering tunnel
@@ -223,7 +225,16 @@ public class Train extends Thread {
                     get_perrmision=true;
                     was_in_tunnel=true;
                     System.out.println(this.id + " get permission");
-                    draw(next_title);
+                    if(was_waited)
+                    {
+                        draw(temp);
+                        draw(next_title);
+                        was_waited=false;
+                    }
+                    else
+                    {
+                        draw(next_title);
+                    }
                     for (Rectangle x:tunnel
                          ) {
                         x.setStroke(Color.ORANGERED);
@@ -237,7 +248,9 @@ public class Train extends Thread {
                         try {
 
                             System.out.println(this.id + " wait for permission");
-                            Thread.sleep(10);
+                            was_waited=true;
+                            temp = next_title;
+                            Thread.sleep(100);
                         }
                         catch (Exception e)
                         {
