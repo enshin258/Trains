@@ -23,9 +23,9 @@ public class Controller implements Initializable {
         Train.setGridPane(panel);
         Train.draw_map();
 
-        Train t1 = new Train("Blue Train",3,0, Color.BLUE,1,40);
-        Train t2 = new Train("Orange Train",3,16, Color.ORANGE,2,20);
-        Train t3 = new Train("Yellow Train",10,13, Color.YELLOW,3,30);
+        Train t1 = new Train("Blue Train",3,0, Color.BLUE,1,100);
+        Train t2 = new Train("Orange Train",3,16, Color.ORANGE,2,160);
+        Train t3 = new Train("Yellow Train",10,13, Color.YELLOW,3,150);
 
         t1.setDaemon(true);
         t2.setDaemon(true);
