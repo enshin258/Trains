@@ -26,6 +26,7 @@ public class Train extends Thread {
     volatile private int pos_y; //actual y position
     volatile private Color color; //color
     private int milis_time; //speed
+    private int waiting_time; //max waiting time (used for random time)
     private int trace_number; //programed trace of train
     private boolean ended_move=false;//indicate if train ended parto of move( from station to station);
 
@@ -49,7 +50,7 @@ public class Train extends Thread {
 
 
 
-    Train(String id, int x, int y, Color color,int trace_number,int milis_time)
+    Train(String id, int x, int y, Color color,int trace_number,int milis_time,int waiting_time)
     {
         this.id=id;
         this.pos_x=x;
@@ -57,6 +58,7 @@ public class Train extends Thread {
         this.color=color;
         this.trace_number= trace_number;
         this.milis_time=milis_time;
+        this.waiting_time=waiting_time;
 
         locomotive = square[pos_x][pos_y];
         switch (trace_number)
@@ -206,8 +208,6 @@ public class Train extends Thread {
 
         prev_title.setFill(Color.GRAY);
         next_title.setFill(this.color);}
-
-
      private void move (Vector<Rectangle> path)
     {
         boolean get_perrmision=false;
@@ -302,13 +302,22 @@ public class Train extends Thread {
             }
         }
     }
-
-
     private void changeDirection()
     {
         Rectangle temp = locomotive;
         locomotive=cargo_back;
         cargo_back=temp;
+    }
+    private void wait_on_station()
+    {
+        try {
+            System.out.println(this.id + " is waiting on station...");
+            Thread.sleep(new Random().nextInt(waiting_time));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();;
+        }
     }
 
 
@@ -339,33 +348,24 @@ public class Train extends Thread {
                 {
                     if(animation_flag)
                     {
-                        //////semaphore.acquireUninterruptibly();
                         if(free_track[4])
                         {
                             free_track[4]=false;
                             move(path);
                             if(ended_move)
                             {
+
                                 free_track[0]=true;
                                 ended_move=false;
+                                wait_on_station();
+
                             }
                         }
 
-                        ////semaphore.release();
-                        try
-                        {
-                            System.out.println(this.id + " is waiting on station...");
-                            Thread.sleep(new Random().nextInt(1000));
-                        }
-                        catch ( Exception e)
-                        {
-                            e.printStackTrace();
-                        }
 
                         Collections.reverse(path);
                         changeDirection();
 
-                        ////semaphore.acquireUninterruptibly();
                         if(free_track[0])
                         {
                             free_track[0]=false;
@@ -374,21 +374,13 @@ public class Train extends Thread {
                             {
                                 free_track[4]=true;
                                 ended_move=false;
+                                wait_on_station();
                             }
                         }
-                        ////semaphore.release();
 
                         Collections.reverse(path);
                         changeDirection();
-                        try
-                        {
-                            System.out.println(this.id + " is waiting on station...");
-                            Thread.sleep(new Random().nextInt(1000));
-                        }
-                        catch ( Exception e)
-                        {
-                            e.printStackTrace();
-                        }
+
                     }
                     else {
                         try {
@@ -433,7 +425,6 @@ public class Train extends Thread {
                 {
                     if(animation_flag)
                     {
-                        ////semaphore.acquireUninterruptibly();
                         if(free_track[1])
                         {
                             free_track[1]=false;
@@ -442,23 +433,15 @@ public class Train extends Thread {
                             {
                                 free_track[2]=true;
                                 ended_move=false;
+                                wait_on_station();
+
                             }
                         }
-                        ////semaphore.release();
-                        try
-                        {
-                            System.out.println(this.id + " is waiting on station...");
-                            Thread.sleep(new Random().nextInt(1000));
-                        }
-                        catch ( Exception e)
-                        {
-                            e.printStackTrace();
-                        }
+
 
                         Collections.reverse(path);
                         changeDirection();
 
-                        ////semaphore.acquireUninterruptibly();
                         if(free_track[2])
                         {
                             free_track[2]=false;
@@ -467,23 +450,16 @@ public class Train extends Thread {
                             {
                                 free_track[1]=true;
                                 ended_move=false;
+                                wait_on_station();
+
                             }
 
 
                         }
-                        ////semaphore.release();
 
                         Collections.reverse(path);
                         changeDirection();
-                        try
-                        {
-                            System.out.println(this.id + " is waiting on station...");
-                            Thread.sleep(new Random().nextInt(1000));
-                        }
-                        catch ( Exception e)
-                        {
-                            e.printStackTrace();
-                        }
+
                     }
                     else
                     {
@@ -535,7 +511,6 @@ public class Train extends Thread {
                 {
                     if(animation_flag)
                     {
-                        ////semaphore.acquireUninterruptibly();
                         if(free_track[0])
                         {
                             free_track[0]=false;
@@ -544,25 +519,16 @@ public class Train extends Thread {
                             {
                                 free_track[3]=true;
                                 ended_move=false;
+                                wait_on_station();
+
                             }
 
-                        }
-                        ////semaphore.release();
-                        try
-                        {
-                            System.out.println(this.id + " is waiting on station...");
-                            Thread.sleep(new Random().nextInt(1000));
-                        }
-                        catch ( Exception e)
-                        {
-                            e.printStackTrace();
                         }
 
                         Collections.reverse(path);
                         changeDirection();
 
 
-                        ////semaphore.acquireUninterruptibly();
                         if(free_track[3])
                         {
                             free_track[3]=false;
@@ -571,21 +537,14 @@ public class Train extends Thread {
                             {
                                 free_track[0]=true;
                                 ended_move=false;
+                                wait_on_station();
+
                             }
                         }
-                        ////semaphore.release();
 
                         Collections.reverse(path);
                         changeDirection();
-                        try
-                        {
-                            System.out.println(this.id + " is waiting on station...");
-                            Thread.sleep(new Random().nextInt(1000));
-                        }
-                        catch ( Exception e)
-                        {
-                            e.printStackTrace();
-                        }
+
                     }
                     else {
                         try {
