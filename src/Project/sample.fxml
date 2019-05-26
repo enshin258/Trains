@@ -7,16 +7,27 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Project.Controller">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1200.0" style="-fx-border-color: black; -fx-border-width: 4;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Project.Controller">
    <children>
-      <Label fx:id="label" alignment="CENTER" prefHeight="49.0" prefWidth="1200.0" text="Trains Simulation">
+      <Label fx:id="label" alignment="CENTER" prefHeight="115.0" prefWidth="1200.0" style="-fx-border-color: black;" text="Trains Simulation">
          <font>
-            <Font name="Agency FB Bold" size="40.0" />
+            <Font name="Agency FB Bold" size="92.0" />
          </font>
+         <textFill>
+            <LinearGradient cycleMethod="REFLECT" endX="0.47572815533980584" endY="0.6116504854368932" startX="0.4563106796116505" startY="0.529126213592233">
+               <stops>
+                  <Stop color="BLACK" />
+                  <Stop color="WHITE" offset="1.0" />
+               </stops>
+            </LinearGradient>
+         </textFill>
       </Label>
-      <GridPane fx:id="panel" gridLinesVisible="true" layoutX="50.0" layoutY="200.0" prefHeight="680.0" prefWidth="1100.0">
+      <GridPane fx:id="panel" gridLinesVisible="true" layoutX="50.0" layoutY="300.0" prefHeight="680.0" prefWidth="1100.0">
         <columnConstraints>
             <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
@@ -50,13 +61,24 @@
             <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="40.0" valignment="TOP" vgrow="ALWAYS" />
         </rowConstraints>
       </GridPane>
-      <Button fx:id="button" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="50.0" mnemonicParsing="false" prefHeight="138.0" prefWidth="200.0" text="Start/Pause" textAlignment="CENTER">
+      <Button fx:id="button" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="117.0" mnemonicParsing="false" prefHeight="183.0" prefWidth="200.0" text="Start/Pause" textAlignment="CENTER">
          <font>
             <Font name="Agency FB Bold" size="35.0" />
          </font>
       </Button>
-      <Slider fx:id="yellow_slider" layoutX="250.0" layoutY="142.0" majorTickUnit="10.0" max="300.0" min="100.0" prefHeight="46.0" prefWidth="900.0" showTickLabels="true" showTickMarks="true" style="-fx-background-color: yellow; -fx-border-color: black;" value="200.0" />
-      <Slider fx:id="orange_slider" layoutX="250.0" layoutY="96.0" majorTickUnit="10.0" max="300.0" min="100.0" prefHeight="46.0" prefWidth="900.0" showTickLabels="true" showTickMarks="true" style="-fx-background-color: orange; -fx-border-color: black;" value="200.0" />
-      <Slider fx:id="blue_slider" layoutX="250.0" layoutY="50.0" majorTickUnit="10.0" max="300.0" min="100.0" prefHeight="46.0" prefWidth="900.0" showTickLabels="true" showTickMarks="true" style="-fx-background-color: blue; -fx-border-color: black;" value="200.0" />
+      <Slider fx:id="yellow_slider" layoutX="350.0" layoutY="249.0" majorTickUnit="10.0" max="300.0" min="100.0" prefHeight="46.0" prefWidth="800.0" showTickLabels="true" showTickMarks="true" style="-fx-background-color: yellow; -fx-border-color: black;" value="200.0" />
+      <Slider fx:id="orange_slider" layoutX="350.0" layoutY="203.0" majorTickUnit="10.0" max="300.0" min="100.0" prefHeight="46.0" prefWidth="800.0" showTickLabels="true" showTickMarks="true" style="-fx-background-color: orange; -fx-border-color: black;" value="200.0" />
+      <Slider fx:id="blue_slider" layoutX="350.0" layoutY="156.0" majorTickUnit="10.0" max="300.0" min="100.0" prefHeight="46.0" prefWidth="800.0" showTickLabels="true" showTickMarks="true" style="-fx-background-color: blue; -fx-border-color: black;" value="200.0" />
+      <Text layoutX="350.0" layoutY="152.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Speed of trains" textAlignment="CENTER" wrappingWidth="800.0000059604645">
+         <font>
+            <Font name="Agency FB Bold" size="22.0" />
+         </font>
+      </Text>
+      <Slider fx:id="waiting_slider" blockIncrement="100.0" layoutX="250.0" layoutY="160.0" majorTickUnit="1000.0" max="10000.0" min="1000.0" orientation="VERTICAL" prefHeight="140.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" />
+      <Text layoutX="250.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting Time" textAlignment="CENTER">
+         <font>
+            <Font name="Agency FB Bold" size="22.0" />
+         </font>
+      </Text>
    </children>
 </Pane>

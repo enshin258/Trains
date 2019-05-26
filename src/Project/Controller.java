@@ -21,16 +21,17 @@ public class Controller implements Initializable {
     @FXML Slider blue_slider;
     @FXML Slider orange_slider;
     @FXML Slider yellow_slider;
+    @FXML Slider waiting_slider;
 
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        Train.setup(panel, button);
+        Train.setup(panel, button,waiting_slider);
         Train.draw_map();
 
-        Train t1 = new Train("Blue Train",3,0, Color.BLUE,1,blue_slider,3000);
-        Train t2 = new Train("Orange Train",3,16, Color.ORANGE,2,orange_slider,3000);
-        Train t3 = new Train("Yellow Train",10,13, Color.YELLOW,3,yellow_slider,3000);
+        Train t1 = new Train("Blue Train",3,0, Color.BLUE,1,blue_slider);
+        Train t2 = new Train("Orange Train",3,16, Color.ORANGE,2,orange_slider);
+        Train t3 = new Train("Yellow Train",10,13, Color.YELLOW,3,yellow_slider);
 
         t1.setDaemon(true);
         t2.setDaemon(true);

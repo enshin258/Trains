@@ -1,6 +1,5 @@
 package Project;
 
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
@@ -11,8 +10,6 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 public class Train extends Thread {
@@ -26,8 +23,7 @@ public class Train extends Thread {
     volatile private int pos_x; //actual x position
     volatile private int pos_y; //actual y position
     volatile private Color color; //color
-    private Slider slider;
-    private int waiting_time; //max waiting time (used for random time)
+    private Slider slider; //set speed of trains
     private int trace_number; //programed trace of train
     volatile private boolean ended_move=false;//indicate if train ended part of move( from station to station);
 
@@ -35,8 +31,9 @@ public class Train extends Thread {
     volatile private static GridPane gridPane; //set grid in background
     volatile private static Rectangle[][] square; //all rectangles
     volatile private static Rectangle[] station; //stations
-    private static Button button;
-    volatile private static boolean animation_flag=false; //check if button is pressed
+    private static Button button;//start/pause button
+    private static Slider waiting_slider;//set time for waiting on station
+    private static boolean animation_flag=false; //check if button is pressed
     volatile private static Vector<Rectangle> tunnel =  new Vector<>();
     //tracks
     volatile private static Vector<Rectangle> track_0 = new Vector<>();
@@ -55,7 +52,7 @@ public class Train extends Thread {
     //4->left track of station 3
     volatile private static boolean[] free_track = {false,true,false,false,true};
 
-    Train(String id, int x, int y, Color color,int trace_number,Slider slider,int waiting_time)
+    Train(String id, int x, int y, Color color,int trace_number,Slider slider)
     {
         this.id=id;
         this.pos_x=x;
@@ -63,7 +60,6 @@ public class Train extends Thread {
         this.color=color;
         this.trace_number= trace_number;
         this.slider=slider;
-        this.waiting_time=waiting_time;
 
         locomotive = square[pos_x][pos_y];
         switch (trace_number)
@@ -89,32 +85,32 @@ public class Train extends Thread {
         }
 
         locomotive.setFill(this.color);
-        locomotive.setId(this.id);
-
-        locomotive.setOnMouseClicked(event -> {
-            System.out.println("Locomotive of: " + this.id);
-        });
+//        locomotive.setId(this.id);
+//
+//        locomotive.setOnMouseClicked(event -> {
+//            System.out.println(this.id);
+//        });
 
         cargo_front.setFill(this.color);
-        cargo_front.setId(this.id);
-
-        cargo_front.setOnMouseClicked(event -> {
-            System.out.println("Front cargo of: " + this.id);
-        });
+//        cargo_front.setId(this.id);
+//
+//        cargo_front.setOnMouseClicked(event -> {
+//            System.out.println(this.id);
+//        });
 
         cargo_back.setFill(this.color);
-        cargo_back.setId(this.id);
-
-        cargo_back.setOnMouseClicked(event -> {
-            System.out.println("Back cargo of: " + this.id);
-        });
+//        cargo_back.setId(this.id);
+//
+//        cargo_back.setOnMouseClicked(event -> {
+//            System.out.println(this.id);
+//        });
 
     }
-
-    static void setup(GridPane g_grid,Button b_button)
+    static void setup(GridPane g_grid,Button b_button,Slider w_waiting_slider)
     {
         gridPane = g_grid;
         button=b_button;
+        waiting_slider=w_waiting_slider;
         button.setOnAction(event -> animation_flag=!animation_flag);
     }
     static private synchronized void color_track(Vector<Rectangle> track,Color color)
@@ -242,20 +238,27 @@ public class Train extends Thread {
     }
     private synchronized void draw(Rectangle next_title)
     {
-        Rectangle prev_title = cargo_back;
+        Rectangle prev_title=cargo_back;
         cargo_back=cargo_front;
         cargo_front=locomotive;
         locomotive=next_title;
         prev_title.setFill(Color.GRAY);
         locomotive.setFill(this.color);
     }
+    private synchronized void cleanup(Vector<Rectangle> path,int z)
+    {
+        for(int j=z;j>=0;j--)
+        {
+            path.get(j).setFill(Color.GRAY);
+        }
+    }
+
     private synchronized void move (Vector<Rectangle> path)
     {
 
         boolean get_permision=false;
         boolean was_in_tunnel=false;
         boolean was_waited=false;
-        Rectangle temp = null;
         for (int i=0;i<path.size();i++)
         {
                 //entering tunnel
@@ -269,15 +272,16 @@ public class Train extends Thread {
                         //System.out.println(this.id + " get permission");
                         if(was_waited)
                         {
+
                             draw(path.get(i-1));
                             draw(path.get(i));
+                            cleanup(path,i-3);
                             was_waited=false;
-
-
                         }
                         else
                         {
                             draw(path.get(i));
+                            cleanup(path,i-3);
                         }
                         for (Rectangle x:tunnel) {
                             x.setStroke(Color.ORANGERED);
@@ -305,6 +309,7 @@ public class Train extends Thread {
                 {
                     //System.out.println(this.id + " left perrmision and tunnel");
                     draw(path.get(i));
+                    cleanup(path,i-3);
                     for (Rectangle x:tunnel
                     ) {
                         x.setStroke(Color.GREENYELLOW);
@@ -319,6 +324,7 @@ public class Train extends Thread {
                 else
                 {
                     draw(path.get(i));
+                    cleanup(path,i-3);
                     //System.out.println(this.id + " just drive");
                     get_permision=false;
                     was_waited=false;
@@ -357,14 +363,14 @@ public class Train extends Thread {
     {
         try {
             System.out.println(this.id + " is waiting on station...");
-            Thread.sleep(new Random().nextInt(waiting_time));
+            int time= (int)waiting_slider.getValue();
+            Thread.sleep(new Random().nextInt(time));
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public synchronized void run() {
