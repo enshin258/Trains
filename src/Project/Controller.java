@@ -15,15 +15,9 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-
-    @FXML
-    public Pane pane;
-
-    @FXML
-    public GridPane panel;
-
+    @FXML Pane pane;
+    @FXML GridPane panel;
     @FXML Button button;
-
     @FXML Slider blue_slider;
     @FXML Slider orange_slider;
     @FXML Slider yellow_slider;
@@ -34,9 +28,9 @@ public class Controller implements Initializable {
         Train.setup(panel, button);
         Train.draw_map();
 
-        Train t1 = new Train("Blue Train",3,0, Color.BLUE,1,blue_slider,500);
-        Train t2 = new Train("Orange Train",3,16, Color.ORANGE,2,orange_slider,500);
-        Train t3 = new Train("Yellow Train",10,13, Color.YELLOW,3,yellow_slider,500);
+        Train t1 = new Train("Blue Train",3,0, Color.BLUE,1,blue_slider,3000);
+        Train t2 = new Train("Orange Train",3,16, Color.ORANGE,2,orange_slider,3000);
+        Train t3 = new Train("Yellow Train",10,13, Color.YELLOW,3,yellow_slider,3000);
 
         t1.setDaemon(true);
         t2.setDaemon(true);

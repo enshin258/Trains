@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="fixed synchronization">
+    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="added sliders">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Trains/sample/Controller.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Trains/sample/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Trains/sample/Train.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Trains/sample/sample.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/Train.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/Train.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/notes" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/notes" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/sample/sample.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/sample.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Project/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Project/Train.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/Train.java" afterDir="false" />
     </list>
     <ignored path="JavaFxApplication.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -70,16 +63,14 @@
     <favorites_list name="JavaFxApplication" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+    <leaf>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Project/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
+            <state relative-caret-position="187">
               <caret line="15" selection-start-line="15" selection-end-line="15" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#554#555#0" expanded="true" />
-                <element signature="e#582#583#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -88,15 +79,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Project/Train.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="327">
-              <caret line="199" column="18" selection-start-line="199" selection-start-column="18" selection-end-line="199" selection-end-column="18" />
+            <state relative-caret-position="126">
+              <caret line="272" column="39" lean-forward="true" selection-start-line="272" selection-start-column="39" selection-end-line="272" selection-end-column="39" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#Train#0;class#Train#0" />
-                <element signature="method#setup#0;class#Train#0" />
-                <element signature="method#draw_map#0;class#Train#0" />
-                <element signature="method#changeDirection#0;class#Train#0" />
-                <element signature="method#wait_on_station#0;class#Train#0" />
               </folding>
             </state>
           </provider>
@@ -105,8 +91,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Project/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="34" column="15" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
+            <state relative-caret-position="497">
+              <caret line="36" column="27" lean-forward="true" selection-start-line="36" selection-start-column="27" selection-end-line="36" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -118,7 +104,7 @@
         <entry file="file://$PROJECT_DIR$/src/Project/sample.fxml">
           <provider editor-type-id="JavaFX-Scene-Builder" />
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
+            <state relative-caret-position="438">
               <caret line="55" column="16" selection-start-line="55" selection-start-column="16" selection-end-line="55" selection-end-column="16" />
             </state>
           </provider>
@@ -146,7 +132,6 @@
       <find>tunel</find>
       <find>sem</find>
       <find>semaphore</find>
-      <find>sema</find>
       <find>5000</find>
       <find>is wai</find>
       <find>mil</find>
@@ -154,6 +139,9 @@
       <find>double</find>
       <find>Dou</find>
       <find>anima</find>
+      <find>waiting_time</find>
+      <find>sema</find>
+      <find>draw</find>
     </findStrings>
     <replaceStrings>
       <replace>ALWAYS</replace>
@@ -192,17 +180,17 @@
         <option value="$PROJECT_DIR$/src/sample/Controller.java" />
         <option value="$PROJECT_DIR$/src/sample/Train.java" />
         <option value="$PROJECT_DIR$/src/Project/Metro.java" />
-        <option value="$PROJECT_DIR$/src/Project/Controller.java" />
         <option value="$PROJECT_DIR$/src/Project/Main.java" />
+        <option value="$PROJECT_DIR$/src/Project/Controller.java" />
         <option value="$PROJECT_DIR$/src/Project/Train.java" />
       </list>
     </option>
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="952" />
-    <option name="width" value="977" />
-    <option name="height" value="1038" />
+    <option name="x" value="951" />
+    <option name="width" value="978" />
+    <option name="height" value="1039" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectReloadState">
@@ -213,7 +201,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -236,7 +224,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -383,7 +371,9 @@
       <workItem from="1558691044135" duration="112000" />
       <workItem from="1558695935417" duration="1991000" />
       <workItem from="1558812664735" duration="555000" />
-      <workItem from="1558870060864" duration="7522000" />
+      <workItem from="1558870060864" duration="7783000" />
+      <workItem from="1558877936790" duration="320000" />
+      <workItem from="1558891671654" duration="5285000" />
     </task>
     <task id="LOCAL-00001" summary="added button for start and pause">
       <created>1558004511121</created>
@@ -469,11 +459,18 @@
       <option name="project" value="LOCAL" />
       <updated>1558463297586</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="added sliders">
+      <created>1558877806160</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1558877806160</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95495000" />
+    <option name="totallyTimeSpent" value="101361000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -486,9 +483,8 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.15704697" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.34295303" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" />
       <window_info id="Designer" order="3" />
@@ -497,7 +493,7 @@
       <window_info id="UI Designer" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32719547" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.36402267" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.43909347" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -526,7 +522,7 @@
       <window_info anchor="right" id="Theme Preview" order="11" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.2147651" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.33287102" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" />
       <window_info id="Designer" order="3" />
@@ -535,7 +531,7 @@
       <window_info id="UI Designer" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32719547" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33094555" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.43909347" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -592,7 +588,8 @@
     <MESSAGE value="testing new synchronization v3" />
     <MESSAGE value="testing new synchronization v4" />
     <MESSAGE value="fixed synchronization" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed synchronization" />
+    <MESSAGE value="added sliders" />
+    <option name="LAST_COMMIT_MESSAGE" value="added sliders" />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -675,54 +672,41 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Project/Metro.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="88">
-          <caret line="4" column="10" lean-forward="true" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Project/Metro.java" />
     <entry file="file://$PROJECT_DIR$/src/Project/sample.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
+        <state relative-caret-position="438">
           <caret line="55" column="16" selection-start-line="55" selection-start-column="16" selection-end-line="55" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Project/Controller.java">
+    <entry file="file://$PROJECT_DIR$/src/Project/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="34" column="15" selection-start-line="34" selection-start-column="15" selection-end-line="34" selection-end-column="15" />
+        <state relative-caret-position="187">
+          <caret line="15" selection-start-line="15" selection-end-line="15" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Project/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/Project/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
+        <state relative-caret-position="497">
+          <caret line="36" column="27" lean-forward="true" selection-start-line="36" selection-start-column="27" selection-end-line="36" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#554#555#0" expanded="true" />
-            <element signature="e#582#583#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Project/Train.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="199" column="18" selection-start-line="199" selection-start-column="18" selection-end-line="199" selection-end-column="18" />
+        <state relative-caret-position="126">
+          <caret line="272" column="39" lean-forward="true" selection-start-line="272" selection-start-column="39" selection-end-line="272" selection-end-column="39" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#Train#0;class#Train#0" />
-            <element signature="method#setup#0;class#Train#0" />
-            <element signature="method#draw_map#0;class#Train#0" />
-            <element signature="method#changeDirection#0;class#Train#0" />
-            <element signature="method#wait_on_station#0;class#Train#0" />
           </folding>
         </state>
       </provider>

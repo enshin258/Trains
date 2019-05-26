@@ -11,7 +11,8 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.Semaphore;
-
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class Train extends Thread {
@@ -28,7 +29,7 @@ public class Train extends Thread {
     private Slider slider;
     private int waiting_time; //max waiting time (used for random time)
     private int trace_number; //programed trace of train
-    volatile private boolean ended_move=false;//indicate if train ended parto of move( from station to station);
+    volatile private boolean ended_move=false;//indicate if train ended part of move( from station to station);
 
 
     volatile private static GridPane gridPane; //set grid in background
@@ -36,8 +37,15 @@ public class Train extends Thread {
     volatile private static Rectangle[] station; //stations
     private static Button button;
     volatile private static boolean animation_flag=false; //check if button is pressed
-    volatile private static Vector<Rectangle> tunnel = new Vector<>();
-    volatile private static Semaphore semaphore = new Semaphore(1,true);//semaphore
+    volatile private static Vector<Rectangle> tunnel =  new Vector<>();
+    //tracks
+    volatile private static Vector<Rectangle> track_0 = new Vector<>();
+    volatile private static Vector<Rectangle> track_1 = new Vector<>();
+    volatile private static Vector<Rectangle> track_2 = new Vector<>();
+    volatile private static Vector<Rectangle> track_3 = new Vector<>();
+    volatile private static Vector<Rectangle> track_4 = new Vector<>();
+
+    volatile private static Semaphore semaphore = new Semaphore(1);//semaphore
 
 
     //0->right track of station 1
@@ -82,7 +90,6 @@ public class Train extends Thread {
 
         locomotive.setFill(this.color);
         locomotive.setId(this.id);
-        locomotive.toFront();
 
         locomotive.setOnMouseClicked(event -> {
             System.out.println("Locomotive of: " + this.id);
@@ -90,7 +97,6 @@ public class Train extends Thread {
 
         cargo_front.setFill(this.color);
         cargo_front.setId(this.id);
-        cargo_front.toFront();
 
         cargo_front.setOnMouseClicked(event -> {
             System.out.println("Front cargo of: " + this.id);
@@ -98,7 +104,6 @@ public class Train extends Thread {
 
         cargo_back.setFill(this.color);
         cargo_back.setId(this.id);
-        cargo_back.toFront();
 
         cargo_back.setOnMouseClicked(event -> {
             System.out.println("Back cargo of: " + this.id);
@@ -112,7 +117,12 @@ public class Train extends Thread {
         button=b_button;
         button.setOnAction(event -> animation_flag=!animation_flag);
     }
-
+    static private synchronized void color_track(Vector<Rectangle> track,Color color)
+    {
+        for (Rectangle r:track) {
+            r.setStroke(color);
+        }
+    }
     static void draw_map()
     {
         square = new Rectangle[11][17];
@@ -142,33 +152,27 @@ public class Train extends Thread {
         //lower part
         for (int i = 0; i <11 ; i++) {
             square[i][16].setFill(Color.GRAY);
-            square[i][16].setStroke(Color.BLACK);
         }
         //upper part
         for (int i = 0; i < 6; i++) {
             square[i][0].setFill(Color.GRAY);
-            square[i][0].setStroke(Color.BLACK);
         }
         //middle part
         for (int i = 0; i < 11; i++) {
             square[i][8].setFill(Color.GRAY);
-            square[i][8].setStroke(Color.BLACK);
         }
         //vertical parts
         //left
         for (int i = 0; i < 8; i++) {
             square[0][i].setFill(Color.GRAY);
-            square[0][i].setStroke(Color.BLACK);
         }
         //middle
         for (int i = 0; i < 16; i++) {
             square[5][i].setFill(Color.GRAY);
-            square[5][i].setStroke(Color.BLACK);
         }
         //right
         for (int i = 8; i < 16; i++) {
             square[10][i].setFill(Color.GRAY);
-            square[10][i].setStroke(Color.BLACK);
         }
 
         //coloring stations
@@ -189,8 +193,54 @@ public class Train extends Thread {
             square[5][i].toFront();
             tunnel.add(square[5][i]);
         }
+        //setting track
+        //track 0
+        track_0.add(square[1][0]);
+        track_0.add(square[2][0]);
+        track_0.add(square[3][0]);
+
+        for (Rectangle r:track_0) {
+            r.setStroke(Color.WHITE);
+            r.toFront();
+        }
+        //track 1
+        track_1.add(square[0][1]);
+        track_1.add(square[0][2]);
+        track_1.add(square[0][3]);
+        for (Rectangle r:track_1) {
+            r.setStroke(Color.WHITE);
+            r.toFront();
+        }
+        //track 2
+        track_2.add(square[1][16]);
+        track_2.add(square[2][16]);
+        track_2.add(square[3][16]);
+        for (Rectangle r:track_2) {
+            r.setStroke(Color.WHITE);
+            r.toFront();
+        }
+        //track 3
+        track_3.add(square[10][15]);
+        track_3.add(square[10][14]);
+        track_3.add(square[10][13]);
+        for (Rectangle r:track_3) {
+            r.setStroke(Color.WHITE);
+            r.toFront();
+        }
+        //track 4
+        track_4.add(square[7][16]);
+        track_4.add(square[8][16]);
+        track_4.add(square[9][16]);
+        for (Rectangle r:track_4) {
+            r.setStroke(Color.WHITE);
+            r.toFront();
+        }
+        //coloring started track with trains
+        color_track(track_0,Color.ORANGERED);
+        color_track(track_2,Color.ORANGERED);
+        color_track(track_3,Color.ORANGERED);
     }
-    void draw(Rectangle next_title)
+    private synchronized void draw(Rectangle next_title)
     {
         Rectangle prev_title = cargo_back;
         cargo_back=cargo_front;
@@ -198,36 +248,36 @@ public class Train extends Thread {
         locomotive=next_title;
         prev_title.setFill(Color.GRAY);
         locomotive.setFill(this.color);
-
-
     }
-     private void move (Vector<Rectangle> path)
+    private synchronized void move (Vector<Rectangle> path)
     {
 
-        boolean get_perrmision=false;
+        boolean get_permision=false;
         boolean was_in_tunnel=false;
         boolean was_waited=false;
         Rectangle temp = null;
-        for (Rectangle next_title:path)
+        for (int i=0;i<path.size();i++)
         {
                 //entering tunnel
-                if(tunnel.contains(next_title))
+                if(tunnel.contains(path.get(i)))
                 {
                     //System.out.println(this.id + " want get permission");
-                    if(semaphore.tryAcquire() || get_perrmision)
+                    if(semaphore.tryAcquire() || get_permision)
                     {
-                        get_perrmision=true;
+                        get_permision=true;
                         was_in_tunnel=true;
                         //System.out.println(this.id + " get permission");
                         if(was_waited)
                         {
-                            draw(temp);
-                            draw(next_title);
+                            draw(path.get(i-1));
+                            draw(path.get(i));
                             was_waited=false;
+
+
                         }
                         else
                         {
-                            draw(next_title);
+                            draw(path.get(i));
                         }
                         for (Rectangle x:tunnel) {
                             x.setStroke(Color.ORANGERED);
@@ -239,10 +289,9 @@ public class Train extends Thread {
                         {
                             try {
 
-                                temp=next_title;
                                 //System.out.println(this.id + " wait for permission");
                                 was_waited=true;
-                                Thread.sleep(10);
+                                Thread.sleep(100);
                             }
                             catch (Exception e)
                             {
@@ -255,27 +304,27 @@ public class Train extends Thread {
                 else if(!tunnel.contains(locomotive) && !tunnel.contains(cargo_front)&& !tunnel.contains(cargo_back) && was_in_tunnel)
                 {
                     //System.out.println(this.id + " left perrmision and tunnel");
-                    draw(next_title);
+                    draw(path.get(i));
                     for (Rectangle x:tunnel
                     ) {
                         x.setStroke(Color.GREENYELLOW);
                     }
 
                     was_in_tunnel=false;
-                    get_perrmision=false;
+                    get_permision=false;
                     semaphore.release();
 
                 }
                 //other route
                 else
                 {
-                    draw(next_title);
+                    draw(path.get(i));
                     //System.out.println(this.id + " just drive");
-                    get_perrmision=false;
+                    get_permision=false;
                     was_waited=false;
 
                 }
-                if(path.lastElement()==next_title)
+                if(path.lastElement()==path.get(i))
                 {
                     ended_move=true;
                 }
@@ -283,7 +332,7 @@ public class Train extends Thread {
                 {
                     ended_move=false;
                 }
-                //time of animation
+                //setting speed of animation
                 try
                 {
                     long max = new Double(this.slider.getMax()).longValue();
@@ -298,13 +347,13 @@ public class Train extends Thread {
 
 
     }
-    private void changeDirection()
+    private synchronized void changeDirection()
     {
         Rectangle temp = locomotive;
         locomotive=cargo_back;
         cargo_back=temp;
     }
-    private void wait_on_station()
+    private synchronized void wait_on_station()
     {
         try {
             System.out.println(this.id + " is waiting on station...");
@@ -316,8 +365,9 @@ public class Train extends Thread {
         }
     }
 
+
     @Override
-    public void run() {
+    public synchronized void run() {
 
         switch (trace_number)
         {
@@ -344,14 +394,17 @@ public class Train extends Thread {
                         if(free_track[4] && animation_flag)
                         {
                             free_track[4]=false;
+                            color_track(track_4,Color.ORANGERED);
                             move(path);
                             if(ended_move)
                            {
 
-                                free_track[0]=true;
-                                ended_move=false;
-                                wait_on_station();
-
+                               free_track[0]=true;
+                               color_track(track_0,Color.GREENYELLOW);
+                               ended_move=false;
+                               wait_on_station();
+                               Collections.reverse(path);
+                               changeDirection();
                             }
                         }
                         else
@@ -361,20 +414,23 @@ public class Train extends Thread {
                             }
                             catch (Exception e)
                             {
-
+                                e.printStackTrace();
                             }
                         }
-                        Collections.reverse(path);
-                        changeDirection();
+
                         if(free_track[0] && animation_flag)
                         {
                             free_track[0]=false;
+                            color_track(track_0,Color.ORANGERED);
                             move(path);
                             if(ended_move)
                             {
                                 free_track[4]=true;
+                                color_track(track_4,Color.GREENYELLOW);
                                 ended_move=false;
                                 wait_on_station();
+                                Collections.reverse(path);
+                                changeDirection();
                             }
                         }
                         else
@@ -384,11 +440,10 @@ public class Train extends Thread {
                             }
                             catch (Exception e)
                             {
-
+                                e.printStackTrace();
                             }
                         }
-                        Collections.reverse(path);
-                        changeDirection();
+
                 }
             }
             case 2://from left bottom to left top
@@ -423,12 +478,16 @@ public class Train extends Thread {
                     if(free_track[1] && animation_flag)
                     {
                         free_track[1]=false;
+                        color_track(track_1,Color.ORANGERED);
                         move(path);
                         if(ended_move)
                         {
                             free_track[2]=true;
+                            color_track(track_2,Color.GREENYELLOW);
                             ended_move=false;
                             wait_on_station();
+                            Collections.reverse(path);
+                            changeDirection();
 
                         }
                     }
@@ -439,21 +498,23 @@ public class Train extends Thread {
                         }
                         catch (Exception e)
                         {
-
+                            e.printStackTrace();
                         }
                     }
-                    Collections.reverse(path);
-                    changeDirection();
+
                     if(free_track[2] && animation_flag)
                     {
                         free_track[2]=false;
+                        color_track(track_2,Color.ORANGERED);
                         move(path);
                         if(ended_move)
                         {
                             free_track[1]=true;
+                            color_track(track_1,Color.GREENYELLOW);
                             ended_move=false;
                             wait_on_station();
-
+                            Collections.reverse(path);
+                            changeDirection();
                         }
                     }
                     else
@@ -463,11 +524,10 @@ public class Train extends Thread {
                         }
                         catch (Exception e)
                         {
-
+                            e.printStackTrace();
                         }
                     }
-                    Collections.reverse(path);
-                    changeDirection();
+
                 }
             }
             case 3:
@@ -509,12 +569,16 @@ public class Train extends Thread {
                     if(free_track[0] && animation_flag)
                     {
                         free_track[0]=false;
+                        color_track(track_0,Color.ORANGERED);
                         move(path);
                         if(ended_move)
                         {
                             free_track[3]=true;
+                            color_track(track_3,Color.GREENYELLOW);
                             ended_move=false;
                             wait_on_station();
+                            Collections.reverse(path);
+                            changeDirection();
                         }
 
                     }
@@ -525,20 +589,23 @@ public class Train extends Thread {
                         }
                         catch (Exception e)
                         {
-
+                            e.printStackTrace();
                         }
                     }
-                    Collections.reverse(path);
-                    changeDirection();
+
                     if(free_track[3] && animation_flag)
                     {
                         free_track[3]=false;
+                        color_track(track_3,Color.ORANGERED);
                         move(path);
                         if(ended_move)
                         {
                             free_track[0]=true;
+                            color_track(track_0,Color.GREENYELLOW);
                             ended_move=false;
                             wait_on_station();
+                            Collections.reverse(path);
+                            changeDirection();
                         }
                     }
                     else
@@ -548,11 +615,10 @@ public class Train extends Thread {
                         }
                         catch (Exception e)
                         {
-
+                            e.printStackTrace();
                         }
                     }
-                    Collections.reverse(path);
-                    changeDirection();
+
                 }
             }
         }
