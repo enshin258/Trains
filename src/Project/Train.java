@@ -1,22 +1,22 @@
-package sample;
+package Project;
 
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
-import javafx.scene.effect.Shadow;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
-import org.w3c.dom.css.Rect;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
 
+
 public class Train extends Thread {
+
+
 
     private String id; //train id
     volatile private Rectangle locomotive; //front part (locomotice)
@@ -25,15 +25,17 @@ public class Train extends Thread {
     volatile private int pos_x; //actual x position
     volatile private int pos_y; //actual y position
     volatile private Color color; //color
-    private int milis_time; //speed
+    private Slider slider;
     private int waiting_time; //max waiting time (used for random time)
     private int trace_number; //programed trace of train
-    private boolean ended_move=false;//indicate if train ended parto of move( from station to station);
+    volatile private boolean ended_move=false;//indicate if train ended parto of move( from station to station);
 
 
     volatile private static GridPane gridPane; //set grid in background
     volatile private static Rectangle[][] square; //all rectangles
     volatile private static Rectangle[] station; //stations
+    private static Button button;
+    volatile private static boolean animation_flag=false; //check if button is pressed
     volatile private static Vector<Rectangle> tunnel = new Vector<>();
     volatile private static Semaphore semaphore = new Semaphore(1,true);//semaphore
 
@@ -43,21 +45,16 @@ public class Train extends Thread {
     //2->right track of station 2
     //3->top track of station 3
     //4->left track of station 3
-    private static volatile boolean[] free_track = {false,true,false,false,true};
-    private static Button button = new Button("Start/Pause"); //button for start and pause animation
+    volatile private static boolean[] free_track = {false,true,false,false,true};
 
-    volatile private static boolean animation_flag = false; //on button click its changes so animation can be started/stopped
-
-
-
-    Train(String id, int x, int y, Color color,int trace_number,int milis_time,int waiting_time)
+    Train(String id, int x, int y, Color color,int trace_number,Slider slider,int waiting_time)
     {
         this.id=id;
         this.pos_x=x;
         this.pos_y=y;
         this.color=color;
         this.trace_number= trace_number;
-        this.milis_time=milis_time;
+        this.slider=slider;
         this.waiting_time=waiting_time;
 
         locomotive = square[pos_x][pos_y];
@@ -108,10 +105,14 @@ public class Train extends Thread {
         });
 
     }
-    static void setGridPane(GridPane grid)
+
+    static void setup(GridPane g_grid,Button b_button)
     {
-        gridPane = grid;
+        gridPane = g_grid;
+        button=b_button;
+        button.setOnAction(event -> animation_flag=!animation_flag);
     }
+
     static void draw_map()
     {
         square = new Rectangle[11][17];
@@ -173,7 +174,6 @@ public class Train extends Thread {
         //coloring stations
 
         station = new Rectangle[3];
-
         station[0] = square[0][0];
         station[1] = square[0][16];
         station[2] = square[10][16];
@@ -181,7 +181,6 @@ public class Train extends Thread {
         for(int i=0;i<3;i++)
         {
             station[i].setFill(Color.RED);
-            station[i].setStroke(Color.DARKRED);
         }
 
         //setting tunnel
@@ -190,117 +189,114 @@ public class Train extends Thread {
             square[5][i].toFront();
             tunnel.add(square[5][i]);
         }
-
-        //button for start and stop animation
-        button.setOnAction(event -> {
-            animation_flag=!animation_flag;
-        });
-        gridPane.add(button,0,0);
     }
-
     void draw(Rectangle next_title)
     {
-
         Rectangle prev_title = cargo_back;
         cargo_back=cargo_front;
         cargo_front=locomotive;
         locomotive=next_title;
-
         prev_title.setFill(Color.GRAY);
-        next_title.setFill(this.color);}
+        locomotive.setFill(this.color);
+
+
+    }
      private void move (Vector<Rectangle> path)
     {
+
         boolean get_perrmision=false;
         boolean was_in_tunnel=false;
         boolean was_waited=false;
         Rectangle temp = null;
         for (Rectangle next_title:path)
         {
-            //entering tunnel
-            if(tunnel.contains(next_title))
-            {
-                System.out.println(this.id + " want get permission");
-                if(semaphore.tryAcquire() || get_perrmision)
+                //entering tunnel
+                if(tunnel.contains(next_title))
                 {
-                    get_perrmision=true;
-                    was_in_tunnel=true;
-                    System.out.println(this.id + " get permission");
-                    if(was_waited)
+                    //System.out.println(this.id + " want get permission");
+                    if(semaphore.tryAcquire() || get_perrmision)
                     {
-                        draw(temp);
-                        draw(next_title);
-                        was_waited=false;
+                        get_perrmision=true;
+                        was_in_tunnel=true;
+                        //System.out.println(this.id + " get permission");
+                        if(was_waited)
+                        {
+                            draw(temp);
+                            draw(next_title);
+                            was_waited=false;
+                        }
+                        else
+                        {
+                            draw(next_title);
+                        }
+                        for (Rectangle x:tunnel) {
+                            x.setStroke(Color.ORANGERED);
+                        }
                     }
                     else
                     {
-                        draw(next_title);
+                        while (semaphore.availablePermits()==0)
+                        {
+                            try {
+
+                                temp=next_title;
+                                //System.out.println(this.id + " wait for permission");
+                                was_waited=true;
+                                Thread.sleep(10);
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                    for (Rectangle x:tunnel) {
-                        x.setStroke(Color.ORANGERED);
+                }
+                //leaving tunnel
+                else if(!tunnel.contains(locomotive) && !tunnel.contains(cargo_front)&& !tunnel.contains(cargo_back) && was_in_tunnel)
+                {
+                    //System.out.println(this.id + " left perrmision and tunnel");
+                    draw(next_title);
+                    for (Rectangle x:tunnel
+                    ) {
+                        x.setStroke(Color.GREENYELLOW);
                     }
 
+                    was_in_tunnel=false;
+                    get_perrmision=false;
+                    semaphore.release();
+
+                }
+                //other route
+                else
+                {
+                    draw(next_title);
+                    //System.out.println(this.id + " just drive");
+                    get_perrmision=false;
+                    was_waited=false;
+
+                }
+                if(path.lastElement()==next_title)
+                {
+                    ended_move=true;
                 }
                 else
                 {
-                    while (semaphore.availablePermits()==0)
-                    {
-                        try {
-
-                            temp=next_title;
-                            System.out.println(this.id + " wait for permission");
-                            was_waited=true;
-                            Thread.sleep(100);
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
+                    ended_move=false;
+                }
+                //time of animation
+                try
+                {
+                    long max = new Double(this.slider.getMax()).longValue();
+                    long value = new Double(this.slider.getValue()).longValue();
+                    Thread.sleep(max-value);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
             }
-            //leaving tunnel
-            else if(!tunnel.contains(locomotive) && !tunnel.contains(cargo_front)&& !tunnel.contains(cargo_back) && was_in_tunnel)
-            {
-                System.out.println(this.id + " left perrmision and tunnel");
-                draw(next_title);
-                for (Rectangle x:tunnel
-                ) {
-                    x.setStroke(Color.GREENYELLOW);
-                }
-
-                was_in_tunnel=false;
-                get_perrmision=false;
-                semaphore.release();
-
-            }
-            //other route
-            else
-            {
-                draw(next_title);
-                System.out.println(this.id + " just drive");
-                get_perrmision=false;
-                was_waited=false;
 
 
-            }
-            if(path.lastElement()==next_title)
-            {
-                ended_move=true;
-            }
-            else
-            {
-                ended_move=false;
-            }
-            //time of animation
-            try
-            {
-                Thread.sleep(milis_time);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
     }
     private void changeDirection()
     {
@@ -316,10 +312,9 @@ public class Train extends Thread {
         }
         catch (Exception e)
         {
-            e.printStackTrace();;
+            e.printStackTrace();
         }
     }
-
 
     @Override
     public void run() {
@@ -346,14 +341,12 @@ public class Train extends Thread {
 
                 while (true)
                 {
-                    if(animation_flag)
-                    {
-                        if(free_track[4])
+                        if(free_track[4] && animation_flag)
                         {
                             free_track[4]=false;
                             move(path);
                             if(ended_move)
-                            {
+                           {
 
                                 free_track[0]=true;
                                 ended_move=false;
@@ -361,12 +354,19 @@ public class Train extends Thread {
 
                             }
                         }
+                        else
+                        {
+                            try {
+                                Thread.currentThread().wait(100);
+                            }
+                            catch (Exception e)
+                            {
 
-
+                            }
+                        }
                         Collections.reverse(path);
                         changeDirection();
-
-                        if(free_track[0])
+                        if(free_track[0] && animation_flag)
                         {
                             free_track[0]=false;
                             move(path);
@@ -377,21 +377,18 @@ public class Train extends Thread {
                                 wait_on_station();
                             }
                         }
+                        else
+                        {
+                            try {
+                                Thread.currentThread().wait(100);
+                            }
+                            catch (Exception e)
+                            {
 
+                            }
+                        }
                         Collections.reverse(path);
                         changeDirection();
-
-                    }
-                    else {
-                        try {
-                            Thread.sleep(1000);
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-
                 }
             }
             case 2://from left bottom to left top
@@ -423,54 +420,54 @@ public class Train extends Thread {
 
                 while (true)
                 {
-                    if(animation_flag)
+                    if(free_track[1] && animation_flag)
                     {
-                        if(free_track[1])
+                        free_track[1]=false;
+                        move(path);
+                        if(ended_move)
                         {
-                            free_track[1]=false;
-                            move(path);
-                            if(ended_move)
-                            {
-                                free_track[2]=true;
-                                ended_move=false;
-                                wait_on_station();
-
-                            }
-                        }
-
-
-                        Collections.reverse(path);
-                        changeDirection();
-
-                        if(free_track[2])
-                        {
-                            free_track[2]=false;
-                            move(path);
-                            if(ended_move)
-                            {
-                                free_track[1]=true;
-                                ended_move=false;
-                                wait_on_station();
-
-                            }
-
+                            free_track[2]=true;
+                            ended_move=false;
+                            wait_on_station();
 
                         }
-
-                        Collections.reverse(path);
-                        changeDirection();
-
                     }
                     else
                     {
                         try {
-                            Thread.sleep(1000);
+                            Thread.currentThread().wait(100);
                         }
                         catch (Exception e)
                         {
-                            e.printStackTrace();
+
                         }
                     }
+                    Collections.reverse(path);
+                    changeDirection();
+                    if(free_track[2] && animation_flag)
+                    {
+                        free_track[2]=false;
+                        move(path);
+                        if(ended_move)
+                        {
+                            free_track[1]=true;
+                            ended_move=false;
+                            wait_on_station();
+
+                        }
+                    }
+                    else
+                    {
+                        try {
+                            Thread.currentThread().wait(100);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                    Collections.reverse(path);
+                    changeDirection();
                 }
             }
             case 3:
@@ -509,53 +506,53 @@ public class Train extends Thread {
 
                 while (true)
                 {
-                    if(animation_flag)
+                    if(free_track[0] && animation_flag)
                     {
-                        if(free_track[0])
+                        free_track[0]=false;
+                        move(path);
+                        if(ended_move)
                         {
-                            free_track[0]=false;
-                            move(path);
-                            if(ended_move)
-                            {
-                                free_track[3]=true;
-                                ended_move=false;
-                                wait_on_station();
-
-                            }
-
+                            free_track[3]=true;
+                            ended_move=false;
+                            wait_on_station();
                         }
-
-                        Collections.reverse(path);
-                        changeDirection();
-
-
-                        if(free_track[3])
-                        {
-                            free_track[3]=false;
-                            move(path);
-                            if(ended_move)
-                            {
-                                free_track[0]=true;
-                                ended_move=false;
-                                wait_on_station();
-
-                            }
-                        }
-
-                        Collections.reverse(path);
-                        changeDirection();
 
                     }
-                    else {
+                    else
+                    {
                         try {
-                            Thread.sleep(1000);
+                            Thread.currentThread().wait(100);
                         }
                         catch (Exception e)
                         {
-                            e.printStackTrace();
+
                         }
                     }
+                    Collections.reverse(path);
+                    changeDirection();
+                    if(free_track[3] && animation_flag)
+                    {
+                        free_track[3]=false;
+                        move(path);
+                        if(ended_move)
+                        {
+                            free_track[0]=true;
+                            ended_move=false;
+                            wait_on_station();
+                        }
+                    }
+                    else
+                    {
+                        try {
+                            Thread.currentThread().wait(100);
+                        }
+                        catch (Exception e)
+                        {
 
+                        }
+                    }
+                    Collections.reverse(path);
+                    changeDirection();
                 }
             }
         }
