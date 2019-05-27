@@ -74,7 +74,7 @@
             <Font name="Agency FB Bold" size="22.0" />
          </font>
       </Text>
-      <Slider fx:id="waiting_slider" blockIncrement="100.0" layoutX="250.0" layoutY="160.0" majorTickUnit="1000.0" max="10000.0" min="1000.0" orientation="VERTICAL" prefHeight="140.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" />
+      <Slider fx:id="waiting_slider" blockIncrement="100.0" layoutX="250.0" layoutY="160.0" majorTickUnit="1000.0" max="10000.0" min="1000.0" orientation="VERTICAL" prefHeight="140.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" value="5000.0" />
       <Text layoutX="250.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting Time" textAlignment="CENTER">
          <font>
             <Font name="Agency FB Bold" size="22.0" />

@@ -1,5 +1,6 @@
 package Project;
 
+import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.GridPane;
@@ -242,15 +243,13 @@ public class Train extends Thread {
         cargo_back=cargo_front;
         cargo_front=locomotive;
         locomotive=next_title;
-        prev_title.setFill(Color.GRAY);
-        locomotive.setFill(this.color);
-    }
-    private synchronized void cleanup(Vector<Rectangle> path,int z)
-    {
-        for(int j=z;j>=0;j--)
+        Platform.runLater(()->
         {
-            path.get(j).setFill(Color.GRAY);
-        }
+            prev_title.setFill(Color.GRAY);
+            locomotive.setFill(this.color);
+        });
+
+
     }
 
     private synchronized void move (Vector<Rectangle> path)
@@ -270,19 +269,7 @@ public class Train extends Thread {
                         get_permision=true;
                         was_in_tunnel=true;
                         //System.out.println(this.id + " get permission");
-                        if(was_waited)
-                        {
-
-                            draw(path.get(i-1));
-                            draw(path.get(i));
-                            cleanup(path,i-3);
-                            was_waited=false;
-                        }
-                        else
-                        {
-                            draw(path.get(i));
-                            cleanup(path,i-3);
-                        }
+                        draw(path.get(i));
                         for (Rectangle x:tunnel) {
                             x.setStroke(Color.ORANGERED);
                         }
@@ -309,7 +296,6 @@ public class Train extends Thread {
                 {
                     //System.out.println(this.id + " left perrmision and tunnel");
                     draw(path.get(i));
-                    cleanup(path,i-3);
                     for (Rectangle x:tunnel
                     ) {
                         x.setStroke(Color.GREENYELLOW);
@@ -324,7 +310,6 @@ public class Train extends Thread {
                 else
                 {
                     draw(path.get(i));
-                    cleanup(path,i-3);
                     //System.out.println(this.id + " just drive");
                     get_permision=false;
                     was_waited=false;
