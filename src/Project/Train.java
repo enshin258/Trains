@@ -23,6 +23,7 @@ public class Train extends Thread {
     volatile private Rectangle cargo_back; //back part
     volatile private int pos_x; //actual x position
     volatile private int pos_y; //actual y position
+    volatile private Vector<Rectangle> path;
     volatile private Color color; //color
     private Slider slider; //set speed of trains
     private int trace_number; //programed trace of train
@@ -116,9 +117,11 @@ public class Train extends Thread {
     }
     static private synchronized void color_track(Vector<Rectangle> track,Color color)
     {
-        for (Rectangle r:track) {
+        Platform.runLater(()->{
+            for (Rectangle r:track) {
             r.setStroke(color);
-        }
+        }});
+
     }
     static void draw_map()
     {
@@ -252,12 +255,12 @@ public class Train extends Thread {
 
     }
 
-    private synchronized void move (Vector<Rectangle> path)
+
+    private synchronized void move ()
     {
 
         boolean get_permision=false;
         boolean was_in_tunnel=false;
-        boolean was_waited=false;
         for (int i=0;i<path.size();i++)
         {
                 //entering tunnel
@@ -276,13 +279,15 @@ public class Train extends Thread {
                     }
                     else
                     {
-                        while (semaphore.availablePermits()==0)
+                        if(semaphore.availablePermits()==0)
                         {
                             try {
-
                                 //System.out.println(this.id + " wait for permission");
-                                was_waited=true;
                                 Thread.sleep(100);
+                                if(i>0)
+                                {
+                                    i--;
+                                }
                             }
                             catch (Exception e)
                             {
@@ -312,7 +317,6 @@ public class Train extends Thread {
                     draw(path.get(i));
                     //System.out.println(this.id + " just drive");
                     get_permision=false;
-                    was_waited=false;
 
                 }
                 if(path.lastElement()==path.get(i))
@@ -365,7 +369,7 @@ public class Train extends Thread {
             case 1://from left top corner to bottom right
             {
                 //creating path for train
-                Vector<Rectangle> path = new Vector<>();
+                path = new Vector<>();
 
                 path.add(square[1][0]);
                 path.add(square[2][0]);
@@ -386,7 +390,7 @@ public class Train extends Thread {
                         {
                             free_track[4]=false;
                             color_track(track_4,Color.ORANGERED);
-                            move(path);
+                            move();
                             if(ended_move)
                            {
 
@@ -413,7 +417,7 @@ public class Train extends Thread {
                         {
                             free_track[0]=false;
                             color_track(track_0,Color.ORANGERED);
-                            move(path);
+                            move();
                             if(ended_move)
                             {
                                 free_track[4]=true;
@@ -439,7 +443,7 @@ public class Train extends Thread {
             }
             case 2://from left bottom to left top
             {
-                Vector<Rectangle> path = new Vector<>();
+                path = new Vector<>();
 
                 path.add(square[1][16]);
                 path.add(square[2][16]);
@@ -470,7 +474,7 @@ public class Train extends Thread {
                     {
                         free_track[1]=false;
                         color_track(track_1,Color.ORANGERED);
-                        move(path);
+                        move();
                         if(ended_move)
                         {
                             free_track[2]=true;
@@ -497,7 +501,7 @@ public class Train extends Thread {
                     {
                         free_track[2]=false;
                         color_track(track_2,Color.ORANGERED);
-                        move(path);
+                        move();
                         if(ended_move)
                         {
                             free_track[1]=true;
@@ -523,7 +527,7 @@ public class Train extends Thread {
             }
             case 3:
             {
-                Vector<Rectangle> path = new Vector<>();
+                path = new Vector<>();
                 path.add(square[10][15]);
                 path.add(square[10][14]);
                 path.add(square[10][13]);
@@ -561,7 +565,7 @@ public class Train extends Thread {
                     {
                         free_track[0]=false;
                         color_track(track_0,Color.ORANGERED);
-                        move(path);
+                        move();
                         if(ended_move)
                         {
                             free_track[3]=true;
@@ -588,7 +592,7 @@ public class Train extends Thread {
                     {
                         free_track[3]=false;
                         color_track(track_3,Color.ORANGERED);
-                        move(path);
+                        move();
                         if(ended_move)
                         {
                             free_track[0]=true;
