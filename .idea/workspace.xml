@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="added waiting time slider">
+    <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="general improvements">
+      <change afterPath="$PROJECT_DIR$/src/Project/Metro.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Project/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/Controller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Project/Train.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/Train.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Project/sample.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/Project/sample.fxml" afterDir="false" />
     </list>
@@ -67,27 +69,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Project/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+            <state relative-caret-position="275">
+              <caret line="15" column="28" lean-forward="true" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Project/Train.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="920">
-              <caret line="312" selection-start-line="312" selection-end-line="312" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#Train#0;class#Train#0" />
-                <element signature="method#setup#0;class#Train#0" />
-                <element signature="method#color_track#0;class#Train#0" />
-                <element signature="method#draw_map#0;class#Train#0" />
-                <element signature="method#draw#0;class#Train#0" />
               </folding>
             </state>
           </provider>
@@ -96,8 +81,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Project/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="161">
-              <caret line="20" column="28" selection-start-line="20" selection-start-column="28" selection-end-line="20" selection-end-column="28" />
+            <state relative-caret-position="227">
+              <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -106,10 +91,41 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Project/Train.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2816">
+              <caret line="265" column="44" selection-start-line="265" selection-start-column="44" selection-end-line="265" selection-end-column="58" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#Train#0;class#Train#0" />
+                <element signature="method#draw#0;class#Train#0" />
+                <element signature="method#changeDirection#0;class#Train#0" />
+                <element signature="method#waitOnStation#0;class#Train#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/Project/Metro.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-42">
+              <caret line="21" column="29" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="method#setup#0;class#Metro#0" />
+                <element signature="method#color_track#0;class#Metro#0" />
+                <element signature="method#draw_map#0;class#Metro#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Project/sample.fxml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="21">
-              <caret line="29" column="31" selection-start-line="29" selection-start-column="24" selection-end-line="29" selection-end-column="31" />
+            <state relative-caret-position="476">
+              <caret line="30" column="31" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
             </state>
           </provider>
           <provider editor-type-id="JavaFX-Scene-Builder" />
@@ -154,6 +170,8 @@
       <find>path</find>
       <find>draw(path.get(i))</find>
       <find>draw(path.get(i));</find>
+      <find>semap</find>
+      <find>wait_on_station</find>
     </findStrings>
     <replaceStrings>
       <replace>ALWAYS</replace>
@@ -172,6 +190,8 @@
       <replace>this.path</replace>
       <replace>Platform.runLater(()-&gt;draw());</replace>
       <replace>draw();</replace>
+      <replace>move();</replace>
+      <replace>waitOnStation</replace>
     </replaceStrings>
   </component>
   <component name="FindManager">
@@ -194,10 +214,10 @@
         <option value="$PROJECT_DIR$/src/sample/notes" />
         <option value="$PROJECT_DIR$/src/sample/Controller.java" />
         <option value="$PROJECT_DIR$/src/sample/Train.java" />
-        <option value="$PROJECT_DIR$/src/Project/Metro.java" />
-        <option value="$PROJECT_DIR$/src/Project/Controller.java" />
         <option value="$PROJECT_DIR$/src/Project/Main.java" />
+        <option value="$PROJECT_DIR$/src/Project/Controller.java" />
         <option value="$PROJECT_DIR$/src/Project/Train.java" />
+        <option value="$PROJECT_DIR$/src/Project/Metro.java" />
       </list>
     </option>
   </component>
@@ -216,8 +236,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -240,6 +258,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -394,7 +414,12 @@
       <workItem from="1558951706569" duration="783000" />
       <workItem from="1558954968223" duration="539000" />
       <workItem from="1558956012210" duration="571000" />
-      <workItem from="1558963371513" duration="1253000" />
+      <workItem from="1558963371513" duration="6185000" />
+      <workItem from="1559128255840" duration="135000" />
+      <workItem from="1559194364289" duration="157000" />
+      <workItem from="1559210195754" duration="763000" />
+      <workItem from="1559401937122" duration="13000" />
+      <workItem from="1559401986957" duration="802000" />
     </task>
     <task id="LOCAL-00001" summary="added button for start and pause">
       <created>1558004511121</created>
@@ -501,11 +526,25 @@
       <option name="project" value="LOCAL" />
       <updated>1558902160914</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="fixing bugs with titles">
+      <created>1558969234868</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1558969234869</updated>
+    </task>
+    <task id="LOCAL-00017" summary="general improvements">
+      <created>1558973875244</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1558973875244</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="112943000" />
+    <option name="totallyTimeSpent" value="119745000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -518,8 +557,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.21879195" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.22281879" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" />
       <window_info id="Designer" order="3" />
@@ -528,7 +568,7 @@
       <window_info id="UI Designer" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.19546743" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.19830029" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.43909347" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -557,7 +597,7 @@
       <window_info anchor="right" id="Theme Preview" order="11" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.33287102" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.45214978" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" />
       <window_info id="Designer" order="3" />
@@ -566,7 +606,7 @@
       <window_info id="UI Designer" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33094555" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3495702" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.43909347" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -626,7 +666,9 @@
     <MESSAGE value="added sliders" />
     <MESSAGE value="added track colors" />
     <MESSAGE value="added waiting time slider" />
-    <option name="LAST_COMMIT_MESSAGE" value="added waiting time slider" />
+    <MESSAGE value="fixing bugs with titles" />
+    <MESSAGE value="general improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="general improvements" />
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -709,7 +751,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Project/Metro.java" />
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/javafx-src.zip!/com/sun/glass/ui/win/WinApplication.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="141">
@@ -738,28 +779,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Project/sample.fxml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="30" column="31" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
+        </state>
+      </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Project/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="33" selection-start-line="12" selection-start-column="33" selection-end-line="12" selection-end-column="33" />
+        <state relative-caret-position="275">
+          <caret line="15" column="28" lean-forward="true" selection-start-line="15" selection-start-column="28" selection-end-line="15" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Project/sample.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="29" column="31" selection-start-line="29" selection-start-column="24" selection-end-line="29" selection-end-column="31" />
-        </state>
-      </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Project/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="20" column="28" selection-start-line="20" selection-start-column="28" selection-end-line="20" selection-end-column="28" />
+        <state relative-caret-position="227">
+          <caret line="32" lean-forward="true" selection-start-line="32" selection-end-line="32" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -768,15 +809,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Project/Train.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="920">
-          <caret line="312" selection-start-line="312" selection-end-line="312" />
+        <state relative-caret-position="2816">
+          <caret line="265" column="44" selection-start-line="265" selection-start-column="44" selection-end-line="265" selection-end-column="58" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#Train#0;class#Train#0" />
-            <element signature="method#setup#0;class#Train#0" />
-            <element signature="method#color_track#0;class#Train#0" />
-            <element signature="method#draw_map#0;class#Train#0" />
             <element signature="method#draw#0;class#Train#0" />
+            <element signature="method#changeDirection#0;class#Train#0" />
+            <element signature="method#waitOnStation#0;class#Train#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Project/Metro.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-42">
+          <caret line="21" column="29" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#setup#0;class#Metro#0" />
+            <element signature="method#color_track#0;class#Metro#0" />
+            <element signature="method#draw_map#0;class#Metro#0" />
           </folding>
         </state>
       </provider>

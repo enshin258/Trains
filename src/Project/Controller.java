@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
+    //importing elements from FXML file
     @FXML Pane pane;
     @FXML GridPane panel;
     @FXML Button button;
@@ -26,8 +27,9 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources)
     {
-        Train.setup(panel, button,waiting_slider);
-        Train.draw_map();
+
+        Metro.create_metro(panel,button,waiting_slider);
+        Metro.draw_map();
 
         Train t1 = new Train("Blue Train",3,0, Color.BLUE,1,blue_slider);
         Train t2 = new Train("Orange Train",3,16, Color.ORANGE,2,orange_slider);
