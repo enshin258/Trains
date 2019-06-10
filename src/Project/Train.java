@@ -226,7 +226,7 @@ public class Train extends Thread {
                 {
                     long max = new Double(this.slider.getMax()).longValue();
                     long value = new Double(this.slider.getValue()).longValue();
-                    Thread.sleep(max-value);
+                    Thread.sleep((max-value)+20);
                 }
                 catch (Exception e)
                 {
